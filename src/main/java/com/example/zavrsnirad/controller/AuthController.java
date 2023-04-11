@@ -17,18 +17,18 @@ public class AuthController {
         this.userService = userService;
     }
 
+
+    // Endpoint za prijavu postojećeg korisnika
     @GetMapping("/login")
     public ResponseEntity<String> login(Authentication authentication) {
         return userService.login(authentication);
     }
 
+
+    // Endpoint za registraciju novog korisnika
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody @Validated SignupDTO data) {
+    public ResponseEntity<String> signup(@Validated @RequestBody SignupDTO data) {
         return userService.signup(data);
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
 }

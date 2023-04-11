@@ -2,7 +2,11 @@ package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.SignupDTO;
+import com.example.zavrsnirad.dto.UserDTO;
 import com.example.zavrsnirad.entity.User;
+import com.example.zavrsnirad.entity.UserProfile;
+import com.example.zavrsnirad.mapper.UserDtoMapper;
+import com.example.zavrsnirad.repository.UserProfileRepository;
 import com.example.zavrsnirad.repository.UserRepository;
 import com.example.zavrsnirad.service.TokenService;
 import com.example.zavrsnirad.service.UserService;
@@ -19,13 +23,17 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService, UserDetailsService {
     // Injektiranje repozitorija
     private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
     private final TokenService tokenService;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserDtoMapper userDtoMapper;
 
-    public UserServiceImpl(UserRepository userRepository, TokenService tokenService, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, UserProfileRepository userProfileRepository, TokenService tokenService, BCryptPasswordEncoder passwordEncoder, UserDtoMapper userDtoMapper) {
         this.userRepository = userRepository;
+        this.userProfileRepository = userProfileRepository;
         this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
+        this.userDtoMapper = userDtoMapper;
     }
 
     // Metoda koja se koristi za dohvaćanje korisnika iz baze podataka prema njegovom username-u
@@ -45,6 +53,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if(data.password().equals(data.passwordConfirmation())) { // provjera da li se lozinke podudaraju
             if(userRepository.findByUsername(data.username()).isEmpty()) { // provjera da li korisnik već postoji
                 User user = new User();
+                UserProfile userProfile = new UserProfile();
 
                 // postavljanje vrijednosti atributa
                 user.setUsername(data.username());
@@ -54,11 +63,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
                 userRepository.save(user);
 
+                userProfile.setUser(user);
+
+                userProfileRepository.save(userProfile);
+
                 return ResponseEntity.ok("User created");
             }
             return ResponseEntity.badRequest().body("Username already exists");
         }
         return ResponseEntity.badRequest().body("Passwords don't match");
+    }
+
+    @Override
+    public ResponseEntity<UserDTO> getSelf(String authorization) {
+        String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found")); // dohvaćanje korisnika iz baze podataka prema username-u
+
+        return ResponseEntity.ok(userDtoMapper.apply(user));
     }
 }
 
