@@ -35,10 +35,12 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors() // Enable CORS
+                .and()
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt) // Enable JWT
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Allow all requests to /api/auth/**
                         .anyRequest().authenticated() // Require authentication for all other requests
@@ -46,6 +48,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Disable session
                 )
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt) // Enable JWT
                 .httpBasic(Customizer.withDefaults()) // Enable basic authentication
                 .build();
     }
