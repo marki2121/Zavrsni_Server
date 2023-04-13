@@ -2,6 +2,8 @@ package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.SignupDTO;
+import com.example.zavrsnirad.dto.UpdatePasswordDTO;
+import com.example.zavrsnirad.dto.UpdateProfileDTO;
 import com.example.zavrsnirad.dto.UserDTO;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.entity.UserProfile;
@@ -10,6 +12,7 @@ import com.example.zavrsnirad.repository.UserProfileRepository;
 import com.example.zavrsnirad.repository.UserRepository;
 import com.example.zavrsnirad.service.TokenService;
 import com.example.zavrsnirad.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +20,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 // Ova klasa predstavlja servis korisnika koji se koristi za pozivanje metoda iz repozitorija te za logiku aplikacije
 @Service
@@ -80,6 +85,31 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found")); // dohvaćanje korisnika iz baze podataka prema username-u
 
         return ResponseEntity.ok(userDtoMapper.apply(user));
+    }
+
+    @Override
+    public ResponseEntity<String> updateSelfProfile(String authorization, UpdateProfileDTO data) {
+        String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found")); // dohvaćanje korisnika iz baze podataka prema username-u
+        UserProfile userProfile = user.getUserProfile(); // dohvaćanje korisnickog profila
+
+        // TODO: map the dto to user profile and check for empty strings so we can reuse the function
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<String> updatePassword(String authorization, UpdatePasswordDTO data) {
+        String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found")); // dohvaćanje korisnika iz baze podataka prema username-u
+
+        if(Objects.equals(passwordEncoder.encode(data.newPassword()), user.getPassword())) {
+            if(Objects.equals(data.confirmationPassword(), data.newPassword())) {
+                user.setPassword(passwordEncoder.encode(data.newPassword()));
+
+                return ResponseEntity.ok("Password updated.");
+            }
+        }
+        return new ResponseEntity<>( "Passwords don't match or bad password", HttpStatus.I_AM_A_TEAPOT);
     }
 }
 
