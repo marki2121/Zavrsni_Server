@@ -42,17 +42,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     // Metoda koja se koristi za dohvaćanje korisnika iz baze podataka prema njegovom username-u
+    // Testirano
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    // Testirano
     @Override
     public ResponseEntity<String> login(Authentication authentication) {
         String token = tokenService.generateToken(authentication); // generiranje tokena
         return ResponseEntity.ok(token);
     }
 
+    // Testirano
     @Override
     public ResponseEntity<String> signup(SignupDTO data) {
         if(data.password().equals(data.passwordConfirmation())) { // provjera da li se lozinke podudaraju
@@ -72,13 +75,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
                 userProfileRepository.save(userProfile);
 
-                return ResponseEntity.ok("User created");
+                return new ResponseEntity("User created", HttpStatus.CREATED);
             }
             return ResponseEntity.badRequest().body("Username already exists");
         }
         return ResponseEntity.badRequest().body("Passwords don't match");
     }
 
+    // Testirano
     @Override
     public ResponseEntity<UserDTO> getSelf(String authorization) {
         String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
@@ -87,6 +91,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return ResponseEntity.ok(userDtoMapper.apply(user));
     }
 
+    // TODO: Test
     @Override
     public ResponseEntity<String> updateSelfProfile(String authorization, UpdateProfileDTO data) {
         String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
@@ -102,11 +107,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found")); // dohvaćanje korisnika iz baze podataka prema username-u
 
-        if(Objects.equals(passwordEncoder.encode(data.newPassword()), user.getPassword())) {
-            if(Objects.equals(data.confirmationPassword(), data.newPassword())) {
-                user.setPassword(passwordEncoder.encode(data.newPassword()));
+        if(passwordEncoder.matches(data.oldPassword(), user.getPassword())) {
+            if(!passwordEncoder.matches(data.newPassword(), user.getPassword())) {
+                if (Objects.equals(data.confirmationPassword(), data.newPassword())) {
+                    user.setPassword(passwordEncoder.encode(data.newPassword()));
 
-                return ResponseEntity.ok("Password updated.");
+                    userRepository.save(user);
+
+                    return ResponseEntity.ok("Password updated.");
+                }
             }
         }
         return new ResponseEntity<>( "Passwords don't match or bad password", HttpStatus.I_AM_A_TEAPOT);
