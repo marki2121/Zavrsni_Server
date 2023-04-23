@@ -19,8 +19,8 @@ public class Subject {
     private Integer subjectSemester;
     @Column(name = "subject_year")
     private Integer subjectYear;
-    @Column(name = "subject_professor")
     @ManyToOne
+    @JoinColumn(name = "subject_professor")
     private User subjectProfessor;
 
     public Subject() {
@@ -43,6 +43,14 @@ public class Subject {
         this.subjectSemester = subjectSemester;
         this.subjectYear = subjectYear;
         this.subjectProfessor = subjectProfessor;
+    }
+
+    public Subject(String subjectName, String subjectDescription, Integer subjectEcts, Integer subjectSemester, Integer subjectYear) {
+        this.subjectName = subjectName;
+        this.subjectDescription = subjectDescription;
+        this.subjectEcts = subjectEcts;
+        this.subjectSemester = subjectSemester;
+        this.subjectYear = subjectYear;
     }
 
     public Long getId() {

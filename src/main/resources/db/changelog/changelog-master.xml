@@ -49,4 +49,30 @@
             <column name="enabled" valueBoolean="true"/>
         </insert>
     </changeSet>
+
+    <changeSet id="subject" author="Marko">
+        <createTable tableName="subject">
+            <column name="id" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_subject_id"/>
+            </column>
+            <column name="subject_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_ects" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_semester" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_year" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_professor" type="BIGINT">
+                <constraints referencedTableName="users" referencedColumnNames="id" foreignKeyName="fk_subject_professor_id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
