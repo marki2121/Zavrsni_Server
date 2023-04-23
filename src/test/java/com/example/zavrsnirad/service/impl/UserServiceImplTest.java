@@ -3,7 +3,6 @@ package com.example.zavrsnirad.service.impl;
 import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.SignupDTO;
 import com.example.zavrsnirad.dto.UpdatePasswordDTO;
-import com.example.zavrsnirad.dto.UserDTO;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.entity.UserProfile;
 import com.example.zavrsnirad.mapper.UserDtoMapper;
@@ -167,46 +166,13 @@ class UserServiceImplTest {
 
         // then
         assertEquals("User created", actualSignupResult.getBody());
-        assertEquals(200, actualSignupResult.getStatusCodeValue());
+        assertEquals(201, actualSignupResult.getStatusCodeValue());
         assertTrue(actualSignupResult.getHeaders().isEmpty());
 
         // verify
         verify(userRepository).save(Mockito.<User>any());
         verify(userRepository).findByUsername(Mockito.<String>any());
         verify(userProfileRepository).save(Mockito.<UserProfile>any());
-    }
-
-    @Test
-    @DisplayName("Try to get self profile and success")
-    void testGetSelfSuccess() {
-        // when
-        when(userRepository.findByUsername(Mockito.<String>any())).thenReturn(Optional.of(new User()));
-        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("janedoe");
-        when(userDtoMapper.apply(Mockito.<User>any())).thenReturn(new UserDTO("janedoe", "Jane", "Doe",
-                "jane.doe@example.org", "42 Main St", "Oxford", "21654", "GB", "6625550144", "Role", "About"));
-        ResponseEntity<UserDTO> actualSelf = userServiceImpl.getSelf("JaneDoe");
-
-        // Then
-        assertTrue(actualSelf.hasBody());
-        assertTrue(actualSelf.getHeaders().isEmpty());
-        assertEquals(200, actualSelf.getStatusCodeValue());
-
-        // Verify
-        verify(userRepository).findByUsername(Mockito.<String>any());
-        verify(tokenService).getUsernameFromToken(Mockito.<String>any());
-        verify(userDtoMapper).apply(Mockito.<User>any());
-    }
-
-    @Test
-    @DisplayName("Try to get self profile and fail (no username)")
-    void testGetSelfAndFailNoUsername() {
-        when(userRepository.findByUsername(Mockito.<String>any())).thenThrow(new UsernameNotFoundException("Msg"));
-        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("janedoe");
-
-        assertThrows(UsernameNotFoundException.class, () -> userServiceImpl.getSelf("JaneDoe"));
-
-        verify(userRepository).findByUsername(Mockito.<String>any());
-        verify(tokenService).getUsernameFromToken(Mockito.<String>any());
     }
 
     @Test

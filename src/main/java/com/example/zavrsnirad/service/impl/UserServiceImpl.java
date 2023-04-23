@@ -3,8 +3,6 @@ package com.example.zavrsnirad.service.impl;
 import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.SignupDTO;
 import com.example.zavrsnirad.dto.UpdatePasswordDTO;
-import com.example.zavrsnirad.dto.UpdateProfileDTO;
-import com.example.zavrsnirad.dto.UserDTO;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.entity.UserProfile;
 import com.example.zavrsnirad.mapper.UserDtoMapper;
@@ -83,25 +81,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     // Testirano
-    @Override
-    public ResponseEntity<UserDTO> getSelf(String authorization) {
-        String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found")); // dohvaćanje korisnika iz baze podataka prema username-u
-
-        return ResponseEntity.ok(userDtoMapper.apply(user));
-    }
-
-    // TODO: Test
-    @Override
-    public ResponseEntity<String> updateSelfProfile(String authorization, UpdateProfileDTO data) {
-        String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found")); // dohvaćanje korisnika iz baze podataka prema username-u
-        UserProfile userProfile = user.getUserProfile(); // dohvaćanje korisnickog profila
-
-        // TODO: map the dto to user profile and check for empty strings so we can reuse the function
-        return null;
-    }
-
     @Override
     public ResponseEntity<String> updatePassword(String authorization, UpdatePasswordDTO data) {
         String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
