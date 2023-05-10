@@ -42,4 +42,9 @@ public class SubjectServiceImpl implements SubjectService {
         subjectRepository.save(subject);
         return ResponseEntity.ok("Subject created");
     }
+
+    @Override
+    public ResponseEntity<Object> getSubject(String authorization, Long id) {
+        return null;
+    }
 }

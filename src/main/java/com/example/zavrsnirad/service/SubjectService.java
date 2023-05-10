@@ -5,4 +5,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface SubjectService {
     ResponseEntity<Object> createSubject(String authorization, SubjectCreateDTO data);
+
+    ResponseEntity<Object> getSubject(String authorization, Long id);
 }

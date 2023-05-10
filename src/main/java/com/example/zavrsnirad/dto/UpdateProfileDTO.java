@@ -1,14 +1,14 @@
 package com.example.zavrsnirad.dto;
 
 public record UpdateProfileDTO(
-        String first_name,
-        String last_name,
+        String firstName,
+        String lastName,
         String email,
-        String phone_number,
+        String phoneNumber,
         String address,
         String city,
-        String zip_code,
+        String zipCode,
         String country,
-        String about_me
+        String aboutMe
 ) {
 }

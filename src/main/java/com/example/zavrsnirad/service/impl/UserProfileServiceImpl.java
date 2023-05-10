@@ -45,20 +45,20 @@ public class UserProfileServiceImpl implements UserProfileService {
         UserProfile userProfile = user.getUserProfile(); // dohvaćanje korisnickog profila
         boolean updated = false;
 
-        if(data.first_name() != null && !data.first_name().isEmpty() && !data.first_name().isBlank() && !data.first_name().equals(userProfile.getFirstName())) {
-            userProfile.setFirstName(data.first_name());
+        if(data.firstName() != null && !data.firstName().isEmpty() && !data.firstName().isBlank() && !data.firstName().equals(userProfile.getFirstName())) {
+            userProfile.setFirstName(data.firstName());
             updated = true;
         }
-        if(data.last_name() != null && !data.last_name().isEmpty() && !data.last_name().isBlank() && !data.last_name().equals(userProfile.getLastName())) {
-            userProfile.setLastName(data.last_name());
+        if(data.lastName() != null && !data.lastName().isEmpty() && !data.lastName().isBlank() && !data.lastName().equals(userProfile.getLastName())) {
+            userProfile.setLastName(data.lastName());
             updated = true;
         }
         if(data.email() != null && !data.email().isEmpty() && !data.email().isBlank() && !data.email().equals(userProfile.getEmail())) {
             userProfile.setEmail(data.email());
             updated = true;
         }
-        if(data.phone_number() != null && !data.phone_number().isEmpty() && !data.phone_number().isBlank() && !data.phone_number().equals(userProfile.getPhoneNumber())) {
-            userProfile.setPhoneNumber(data.phone_number());
+        if(data.phoneNumber() != null && !data.phoneNumber().isEmpty() && !data.phoneNumber().isBlank() && !data.phoneNumber().equals(userProfile.getPhoneNumber())) {
+            userProfile.setPhoneNumber(data.phoneNumber());
             updated = true;
         }
         if(data.address() != null && !data.address().isEmpty() && !data.address().isBlank() && !data.address().equals(userProfile.getAddress())) {
@@ -69,16 +69,16 @@ public class UserProfileServiceImpl implements UserProfileService {
             userProfile.setCity(data.city());
             updated = true;
         }
-        if(data.zip_code() != null && !data.zip_code().isEmpty() && !data.zip_code().isBlank() && !data.zip_code().equals(userProfile.getZipCode())) {
-            userProfile.setZipCode(data.zip_code());
+        if(data.zipCode() != null && !data.zipCode().isEmpty() && !data.zipCode().isBlank() && !data.zipCode().equals(userProfile.getZipCode())) {
+            userProfile.setZipCode(data.zipCode());
             updated = true;
         }
         if(data.country() != null && !data.country().isEmpty() && !data.country().isBlank() && !data.country().equals(userProfile.getCountry())) {
             userProfile.setCountry(data.country());
             updated = true;
         }
-        if(data.about_me() != null && !data.about_me().isEmpty() && !data.about_me().isBlank() && !data.about_me().equals(userProfile.getAboutMe())) {
-            userProfile.setAboutMe(data.about_me());
+        if(data.aboutMe() != null && !data.aboutMe().isEmpty() && !data.aboutMe().isBlank() && !data.aboutMe().equals(userProfile.getAboutMe())) {
+            userProfile.setAboutMe(data.aboutMe());
             updated = true;
         }
 
