@@ -20,6 +20,25 @@ public class SubjectController {
         return subjectService.createSubject(Authorization, data);
     }
 
+    @GetMapping("/teacher")
+    public ResponseEntity<Object> getSubjects(@RequestHeader String Authorization){
+        return subjectService.getSubjects(Authorization);
+    }
+
+    @GetMapping("/teacher/{id}")
+    public ResponseEntity<Object> getSubjectTeacher(@RequestHeader String Authorization, @PathVariable Long id){
+        return subjectService.getSubjectTeacher(Authorization, id);
+    }
+
+    @DeleteMapping("/teacher/{id}")
+    public ResponseEntity<Object> deleteSubject(@RequestHeader String Authorization, @PathVariable Long id){
+        return subjectService.deleteSubject(Authorization, id);
+    }
+
+    //TODO: napravi call za update predmeta
+
+
+    //TODO: napraviti funkciju za dohvacanje svih predmeta na koje je ucenik dodan
     @GetMapping("/{id}")
     public ResponseEntity<Object> getSubject(@RequestHeader String Authorization, @PathVariable Long id){
         return subjectService.getSubject(Authorization, id);
