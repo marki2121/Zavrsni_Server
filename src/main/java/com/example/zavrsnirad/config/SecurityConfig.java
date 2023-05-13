@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Allow all requests to /api/auth/**
                         .requestMatchers("/api/subject/teacher/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_TEACHER") // Only admin and user allowed
+                        .requestMatchers("/api/test/teacher/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_TEACHER") // Only admin and user allowed
                         .anyRequest().authenticated() // Require authentication for all other requests
                 )
                 .sessionManagement(session -> session

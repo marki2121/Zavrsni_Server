@@ -2,6 +2,8 @@ package com.example.zavrsnirad.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "subject")
 public class Subject {
@@ -22,6 +24,16 @@ public class Subject {
     @ManyToOne
     @JoinColumn(name = "subject_professor")
     private User subjectProfessor;
+    @ManyToMany
+    @JoinTable(
+            name = "user_subject",
+            joinColumns = @JoinColumn(name = "subject_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> students;
+    @OneToMany(mappedBy = "subject")
+    private Set<Test> tests;
+
 
     public Subject() {
     }
@@ -107,5 +119,21 @@ public class Subject {
 
     public void setSubjectProfessor(User subjectProfessor) {
         this.subjectProfessor = subjectProfessor;
+    }
+
+    public Set<User> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<User> students) {
+        this.students = students;
+    }
+
+    public Set<Test> getTests() {
+        return tests;
+    }
+
+    public void setTests(Set<Test> tests) {
+        this.tests = tests;
     }
 }

@@ -13,4 +13,14 @@ public interface SubjectService {
     ResponseEntity<Object> getSubjectTeacher(String authorization, Long id);
 
     ResponseEntity<Object> deleteSubject(String authorization, Long id);
+
+    ResponseEntity<Object> updateSubject(String authorization, Long id, SubjectCreateDTO data);
+
+    ResponseEntity<Object> getSubjectsStudent(String authorization);
+
+    ResponseEntity<Object> addStudentToSubject(String authorization, Long id, Long studentId);
+
+    ResponseEntity<Object> removeStudentFromSubject(String authorization, Long id, Long studentId);
+
+    ResponseEntity<Object> getStudentsFromSubject(String authorization, Long id);
 }
