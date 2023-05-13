@@ -13,7 +13,7 @@ public class TestApplication {
     @JoinColumn(name = "test_id", nullable = false)
     private Test test;
     @ManyToOne
-    @JoinColumn(name = "student_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User student;
     @Column(name = "test_grade")
     private Integer testGrade;

@@ -100,4 +100,20 @@
             <column name="test_note" type="VARCHAR(255)" />
         </createTable>
     </changeSet>
+    <changeSet id="test_application" author="Marko">
+        <createTable tableName="test_application">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_test_application_id"/>
+            </column>
+            <column name="test_id" type="BIGINT">
+                <constraints referencedTableName="tests" referencedColumnNames="id" foreignKeyName="fk_test_id_test_application" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints referencedTableName="users" referencedColumnNames="id" foreignKeyName="fk_user_id_test_application" nullable="false"/>
+            </column>
+            <column name="test_grade" type="INT" />
+            <column name="test_note" type="VARCHAR(255)" />
+            <column name="test_graded" type="BOOLEAN" />
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
