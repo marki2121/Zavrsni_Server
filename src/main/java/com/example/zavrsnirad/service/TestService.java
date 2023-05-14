@@ -11,4 +11,8 @@ public interface TestService {
     ResponseEntity<Object> deleteTest(String authorization, Long id, Long testId);
 
     ResponseEntity<Object> updateTest(String authorization, Long id, Long testId, TestCreateDTO data);
+
+    ResponseEntity<Object> getAllTestsApplications(String authorization, Long id, Long testId);
+
+    ResponseEntity<Object> gradeTest(String authorization, Long applicationId, Integer grade);
 }

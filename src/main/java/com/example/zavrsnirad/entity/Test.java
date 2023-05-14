@@ -3,6 +3,7 @@ package com.example.zavrsnirad.entity;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "tests")
@@ -18,6 +19,8 @@ public class Test {
     private Date testDate;
     @Column(name = "test_note")
     private String testNote;
+    @OneToMany(mappedBy = "test")
+    private Set<TestApplication> testApplication;
 
     public Test() {
     }
@@ -59,5 +62,9 @@ public class Test {
 
     public void setTestNote(String testNote) {
         this.testNote = testNote;
+    }
+
+    public Set<TestApplication> getTestApplication() {
+        return testApplication;
     }
 }

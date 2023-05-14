@@ -34,4 +34,14 @@ public class TestController {
     public ResponseEntity<Object> updateTest(@RequestHeader String Authorization, @PathVariable Long id, @PathVariable Long testId, @RequestBody TestCreateDTO data){
         return testService.updateTest(Authorization, id, testId, data);
     }
+
+    @GetMapping("teacher/{id}/{testId}/all")
+    public ResponseEntity<Object> getAllTestsApplications(@RequestHeader String Authorization, @PathVariable Long id, @PathVariable Long testId){
+        return testService.getAllTestsApplications(Authorization, id, testId);
+    }
+
+    @PostMapping("teacher/{applicationId}/grade/{grade}")
+    public ResponseEntity<Object> gradeTest(@RequestHeader String Authorization, @PathVariable Long applicationId, @PathVariable Integer grade){
+        return testService.gradeTest(Authorization, applicationId, grade);
+    }
 }
