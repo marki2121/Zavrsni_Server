@@ -11,7 +11,7 @@ class UpdateProfileDTOTest {
     @DisplayName("Test about me")
     void testAbout_me() {
         assertEquals("About me", (new UpdateProfileDTO("Jane", "Doe", "jane.doe@example.org", "6625550144", "42 Main St",
-                "Oxford", "21654", "GB", "About me")).about_me());
+                "Oxford", "21654", "GB", "About me")).aboutMe());
     }
 
     @Test
@@ -34,11 +34,11 @@ class UpdateProfileDTOTest {
         UpdateProfileDTO actualUpdateProfileDTO = new UpdateProfileDTO("Jane", "Doe", "jane.doe@example.org", "6625550144",
                 "42 Main St", "Oxford", "21654", "GB", "About me");
 
-        assertEquals("About me", actualUpdateProfileDTO.about_me());
-        assertEquals("21654", actualUpdateProfileDTO.zip_code());
-        assertEquals("6625550144", actualUpdateProfileDTO.phone_number());
-        assertEquals("Doe", actualUpdateProfileDTO.last_name());
-        assertEquals("Jane", actualUpdateProfileDTO.first_name());
+        assertEquals("About me", actualUpdateProfileDTO.aboutMe());
+        assertEquals("21654", actualUpdateProfileDTO.zipCode());
+        assertEquals("6625550144", actualUpdateProfileDTO.phoneNumber());
+        assertEquals("Doe", actualUpdateProfileDTO.lastName());
+        assertEquals("Jane", actualUpdateProfileDTO.firstName());
         assertEquals("jane.doe@example.org", actualUpdateProfileDTO.email());
         assertEquals("GB", actualUpdateProfileDTO.country());
         assertEquals("Oxford", actualUpdateProfileDTO.city());
@@ -63,28 +63,28 @@ class UpdateProfileDTOTest {
     @DisplayName("Test first name")
     void testFirst_name() {
         assertEquals("Jane", (new UpdateProfileDTO("Jane", "Doe", "jane.doe@example.org", "6625550144", "42 Main St",
-                "Oxford", "21654", "GB", "About me")).first_name());
+                "Oxford", "21654", "GB", "About me")).firstName());
     }
 
     @Test
     @DisplayName("Test last name")
     void testLast_name() {
         assertEquals("Doe", (new UpdateProfileDTO("Jane", "Doe", "jane.doe@example.org", "6625550144", "42 Main St",
-                "Oxford", "21654", "GB", "About me")).last_name());
+                "Oxford", "21654", "GB", "About me")).lastName());
     }
 
     @Test
     @DisplayName("Test phone number")
     void testPhone_number() {
         assertEquals("6625550144", (new UpdateProfileDTO("Jane", "Doe", "jane.doe@example.org", "6625550144",
-                "42 Main St", "Oxford", "21654", "GB", "About me")).phone_number());
+                "42 Main St", "Oxford", "21654", "GB", "About me")).phoneNumber());
     }
 
     @Test
     @DisplayName("Test zip code")
     void testZip_code() {
         assertEquals("21654", (new UpdateProfileDTO("Jane", "Doe", "jane.doe@example.org", "6625550144", "42 Main St",
-                "Oxford", "21654", "GB", "About me")).zip_code());
+                "Oxford", "21654", "GB", "About me")).zipCode());
     }
 }
 
