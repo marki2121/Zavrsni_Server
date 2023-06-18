@@ -1,0 +1,14 @@
+version: '2'
+services:
+  db:
+    container_name: zavrsni-db
+    restart: unless-stopped
+    image: mysql:5.7
+    command: --innodb_use_native_aio=0
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_DATABASE: 'zavrsni'
+    ports: 
+      - 6612:3306
+    volumes:
+      - ./db:/var/lib/mysql
