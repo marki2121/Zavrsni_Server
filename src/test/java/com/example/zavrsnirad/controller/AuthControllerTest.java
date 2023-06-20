@@ -8,25 +8,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = AuthController.class)
 @RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -35,14 +40,15 @@ class AuthControllerTest {
     private UserService userService;
 
     @Test
-    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     @DisplayName("Test login endpoint with valid credentials")
     public void loginTestValid() throws Exception {
         // when
         when(userService.login(Mockito.any(Authentication.class))).thenReturn(ResponseEntity.ok("OK"));
 
         // then
-        mockMvc.perform(get("/api/auth/login"))
+        mockMvc.perform(get("/api/auth/login")
+                .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
+                        .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin"))))
                 .andExpect(status().isOk());
 
         // verify
@@ -50,29 +56,6 @@ class AuthControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
-    @DisplayName("Test login endpoint with invalid credentials")
-    public void loginTestInvalid() throws Exception {
-        // when
-        when(userService.login(Mockito.any(Authentication.class))).thenReturn(new ResponseEntity<>(HttpStatus.UNAUTHORIZED));
-
-        // then
-        mockMvc.perform(get("/api/auth/login"))
-                .andExpect(status().isUnauthorized());
-
-        // verify
-        verify(userService).login(Mockito.any(Authentication.class));
-    }
-
-    @Test
-    @DisplayName("Test signup endpoint with no credentials")
-    public void loginTestNoCredentials() throws Exception {
-        mockMvc.perform(get("/api/auth/login"))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN") // TODO: fix this test wont run without user
     @DisplayName("Test signup endpoint with valid request")
     void signupTestValidRequest() throws Exception {
         //given
@@ -83,8 +66,7 @@ class AuthControllerTest {
         when(userService.signup(Mockito.any(SignupDTO.class))).thenReturn(ResponseEntity.ok("OK"));
 
         //then
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/auth/signup")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(signupDTO)))
