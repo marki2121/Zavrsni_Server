@@ -251,10 +251,202 @@ class AdminServiceImplTest {
         //given
         User user = new User(1l, "admin", "admin", Role.ADMIN, true, null);
         User testUser = new User(2L, "admin2", "admin", Role.ADMIN, true, null);
+
+        //when
+        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("admin");
+        when(userRepository.findByUsername(Mockito.<String>any())).thenReturn(java.util.Optional.of(user));
+        when(userRepository.findById(Mockito.<Long>any())).thenReturn(java.util.Optional.of(testUser));
+
+        //then
+        ResponseEntity responseEntity = adminServiceImpl.deleteUserById("admin", 2L);
+        Assertions.assertEquals(200, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals("User deleted", responseEntity.getBody());
+
+        //verify
+        Mockito.verify(tokenService, Mockito.times(1)).getUsernameFromToken(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findByUsername(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findById(Mockito.<Long>any());
+        Mockito.verify(userRepository, Mockito.times(1)).delete(Mockito.<User>any());
     }
 
     @Test
+    @DisplayName("Test deleteUserById and fail no username found in token")
+    void deleteUserByIdFailNoUsernameFoundInToken() {
+        //when
+        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn(null);
+
+        //then
+        ResponseEntity responseEntity = adminServiceImpl.deleteUserById("admin", 2L);
+        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals("User not found", responseEntity.getBody());
+
+        //verify
+        Mockito.verify(tokenService, Mockito.times(1)).getUsernameFromToken(Mockito.<String>any());
+    }
+
+    @Test
+    @DisplayName("Test deleteUserById and fail user is teacher not admin")
+    void deleteUserByIdFailUserIsTeacherNotAdmin() {
+        //given
+        User user = new User(1l, "teacher", "teacher", Role.TEACHER, true, null);
+
+        //when
+        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("teacher");
+        when(userRepository.findByUsername(Mockito.<String>any())).thenReturn(java.util.Optional.of(user));
+
+        //then
+        ResponseEntity responseEntity = adminServiceImpl.deleteUserById("teacher", 2L);
+        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals("User is not admin", responseEntity.getBody());
+
+        //verify
+        Mockito.verify(tokenService, Mockito.times(1)).getUsernameFromToken(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findByUsername(Mockito.<String>any());
+    }
+
+    @Test
+    @DisplayName("Test deleteUserById and fail user is student not admin")
+    void deleteUserByIdFailUserIsStudentNotAdmin() {
+        //given
+        User user = new User(1l, "student", "student", Role.STUDENT, true, null);
+
+        //when
+        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("student");
+        when(userRepository.findByUsername(Mockito.<String>any())).thenReturn(java.util.Optional.of(user));
+
+        //then
+        ResponseEntity responseEntity = adminServiceImpl.deleteUserById("student", 2L);
+        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals("User is not admin", responseEntity.getBody());
+
+        //verify
+        Mockito.verify(tokenService, Mockito.times(1)).getUsernameFromToken(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findByUsername(Mockito.<String>any());
+    }
+
+    @Test
+    @DisplayName("Test deleteUserById and fail user is not found")
+    void deleteUserByIdFailUserIsNotFound() {
+        //given
+        User user = new User(1l, "admin", "admin", Role.ADMIN, true, null);
+
+        //when
+        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("admin");
+        when(userRepository.findByUsername(Mockito.<String>any())).thenReturn(java.util.Optional.of(user));
+        when(userRepository.findById(Mockito.<Long>any())).thenReturn(java.util.Optional.empty());
+
+        //then
+        ResponseEntity responseEntity = adminServiceImpl.deleteUserById("admin", 2L);
+        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals("User not found", responseEntity.getBody());
+
+        //verify
+        Mockito.verify(tokenService, Mockito.times(1)).getUsernameFromToken(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findByUsername(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findById(Mockito.<Long>any());
+    }
+
+    @Test
+    @DisplayName("Test disableUserById successfully")
     void disableUserById() {
+        //given
+        User user = new User(1l, "admin", "admin", Role.ADMIN, true, null);
+        User testUser = new User(2L, "admin2", "admin", Role.ADMIN, true, null);
+
+        //when
+        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("admin");
+        when(userRepository.findByUsername(Mockito.<String>any())).thenReturn(java.util.Optional.of(user));
+        when(userRepository.findById(Mockito.<Long>any())).thenReturn(java.util.Optional.of(testUser));
+
+
+        //then
+        ResponseEntity responseEntity = adminServiceImpl.disableUserById("admin", 2L);
+        Assertions.assertEquals(200, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals("User disabled", responseEntity.getBody());
+        Assertions.assertEquals(testUser.getEnabled(), false);
+
+        //verify
+        Mockito.verify(tokenService, Mockito.times(1)).getUsernameFromToken(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findByUsername(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findById(Mockito.<Long>any());
+        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.<User>any());
+    }
+
+    @Test
+    @DisplayName("Test disableUserById and fail no username found in token")
+    void disableUserByIdFailNoUsernameFoundInToken() {
+        //when
+        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn(null);
+
+        //then
+        ResponseEntity responseEntity = adminServiceImpl.disableUserById("admin", 2L);
+        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals("User not found", responseEntity.getBody());
+
+        //verify
+        Mockito.verify(tokenService, Mockito.times(1)).getUsernameFromToken(Mockito.<String>any());
+    }
+
+    @Test
+    @DisplayName("Test disableUserById and fail user is teacher not admin")
+    void disableUserByIdFailUserIsTeacherNotAdmin() {
+        //given
+        User user = new User(1l, "teacher", "teacher", Role.TEACHER, true, null);
+
+        //when
+        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("teacher");
+        when(userRepository.findByUsername(Mockito.<String>any())).thenReturn(java.util.Optional.of(user));
+
+        //then
+        ResponseEntity responseEntity = adminServiceImpl.disableUserById("teacher", 2L);
+        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals("User is not admin", responseEntity.getBody());
+
+        //verify
+        Mockito.verify(tokenService, Mockito.times(1)).getUsernameFromToken(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findByUsername(Mockito.<String>any());
+    }
+
+    @Test
+    @DisplayName("Test disableUserById and fail user is student not admin")
+    void disableUserByIdFailUserIsStudentNotAdmin() {
+        //given
+        User user = new User(1l, "student", "student", Role.STUDENT, true, null);
+
+        //when
+        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("student");
+        when(userRepository.findByUsername(Mockito.<String>any())).thenReturn(java.util.Optional.of(user));
+
+        //then
+        ResponseEntity responseEntity = adminServiceImpl.disableUserById("student", 2L);
+        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals("User is not admin", responseEntity.getBody());
+
+        //verify
+        Mockito.verify(tokenService, Mockito.times(1)).getUsernameFromToken(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findByUsername(Mockito.<String>any());
+    }
+
+    @Test
+    @DisplayName("Test disableUserById and fail user is not found")
+    void disableUserByIdFailUserIsNotFound() {
+        //given
+        User user = new User(1l, "admin", "admin", Role.ADMIN, true, null);
+
+        //when
+        when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("admin");
+        when(userRepository.findByUsername(Mockito.<String>any())).thenReturn(java.util.Optional.of(user));
+        when(userRepository.findById(Mockito.<Long>any())).thenReturn(java.util.Optional.empty());
+
+        //then
+        ResponseEntity responseEntity = adminServiceImpl.disableUserById("admin", 2L);
+        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals("User not found", responseEntity.getBody());
+
+        //verify
+        Mockito.verify(tokenService, Mockito.times(1)).getUsernameFromToken(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findByUsername(Mockito.<String>any());
+        Mockito.verify(userRepository, Mockito.times(1)).findById(Mockito.<Long>any());
     }
 
     @Test

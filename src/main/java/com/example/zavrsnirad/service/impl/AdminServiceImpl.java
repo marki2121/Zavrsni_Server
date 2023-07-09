@@ -80,7 +80,7 @@ public class AdminServiceImpl implements AdminService {
         Optional<User> userById = userRepository.findById(id);
         if(userById.isEmpty()) return ResponseEntity.badRequest().body("User not found");
 
-        userRepository.deleteById(id);
+        userRepository.delete(userById.get());
 
         return ResponseEntity.ok("User deleted");
     }
