@@ -57,10 +57,11 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<Object> getUserById(String authorization, Long id) {
         String username = tokenService.getUsernameFromToken(authorization);
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<User> userById = userRepository.findById(id);
 
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(!user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not admin");
+
+        Optional<User> userById = userRepository.findById(id);
         if(userById.isEmpty()) return ResponseEntity.badRequest().body("User not found");
 
         UserResponseDTO responseDTO = userResponseDtoMapper.apply(userById.get());
