@@ -73,10 +73,11 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<Object> deleteUserById(String authorization, Long id) {
         String username = tokenService.getUsernameFromToken(authorization);
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<User> userById = userRepository.findById(id);
 
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(!user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not admin");
+
+        Optional<User> userById = userRepository.findById(id);
         if(userById.isEmpty()) return ResponseEntity.badRequest().body("User not found");
 
         userRepository.deleteById(id);
@@ -88,10 +89,11 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<Object> disableUserById(String authorization, Long id) {
         String username = tokenService.getUsernameFromToken(authorization);
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<User> userById = userRepository.findById(id);
 
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(!user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not admin");
+
+        Optional<User> userById = userRepository.findById(id);
         if(userById.isEmpty()) return ResponseEntity.badRequest().body("User not found");
 
         userById.get().setEnabled(false);
@@ -105,10 +107,11 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<Object> enableUserById(String authorization, Long id) {
         String username = tokenService.getUsernameFromToken(authorization);
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<User> userById = userRepository.findById(id);
 
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(!user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not admin");
+
+        Optional<User> userById = userRepository.findById(id);
         if(userById.isEmpty()) return ResponseEntity.badRequest().body("User not found");
 
         userById.get().setEnabled(true);
@@ -122,10 +125,11 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<Object> promoteUserById(String authorization, Long id) {
         String username = tokenService.getUsernameFromToken(authorization);
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<User> userById = userRepository.findById(id);
 
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(!user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not admin");
+
+        Optional<User> userById = userRepository.findById(id);
         if(userById.isEmpty()) return ResponseEntity.badRequest().body("User not found");
 
         if(userById.get().getRole().equals(Role.STUDENT)){
@@ -149,10 +153,11 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<Object> demoteUserById(String authorization, Long id) {
         String username = tokenService.getUsernameFromToken(authorization);
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<User> userById = userRepository.findById(id);
 
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(!user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not admin");
+
+        Optional<User> userById = userRepository.findById(id);
         if(userById.isEmpty()) return ResponseEntity.badRequest().body("User not found");
 
         if(userById.get().getRole().equals(Role.ADMIN)){
@@ -174,10 +179,11 @@ public class AdminServiceImpl implements AdminService {
     public ResponseEntity<Object> changePassword(String authorization, Long id, String newPassword) {
         String username = tokenService.getUsernameFromToken(authorization);
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<User> userById = userRepository.findById(id);
 
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(!user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not admin");
+
+        Optional<User> userById = userRepository.findById(id);
         if(userById.isEmpty()) return ResponseEntity.badRequest().body("User not found");
 
         userById.get().setPassword(passwordEncoder.encode(newPassword));

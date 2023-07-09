@@ -246,7 +246,11 @@ class AdminServiceImplTest {
     }
 
     @Test
+    @DisplayName("Test deleteUserById successfully")
     void deleteUserById() {
+        //given
+        User user = new User(1l, "admin", "admin", Role.ADMIN, true, null);
+        User testUser = new User(2L, "admin2", "admin", Role.ADMIN, true, null);
     }
 
     @Test
