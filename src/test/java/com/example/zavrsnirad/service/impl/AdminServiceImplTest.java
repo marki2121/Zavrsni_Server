@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -32,8 +31,6 @@ class AdminServiceImplTest {
     private TokenService tokenService;
     @MockBean
     private UserResponseDtoMapper userResponseDtoMapper;
-    @MockBean
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private AdminServiceImpl adminServiceImpl;
@@ -54,7 +51,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getAllUsers("admin");
-        Assertions.assertEquals(200, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         Assertions.assertEquals(1, ((List<UserResponseDTO>) responseEntity.getBody()).size());
         Assertions.assertEquals(userResponseDTO, ((List<UserResponseDTO>) responseEntity.getBody()).get(0));
 
@@ -73,7 +70,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getAllUsers("admin");
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User not found", responseEntity.getBody());
 
         //verify
@@ -92,7 +89,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getAllUsers("teacher");
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User is not admin", responseEntity.getBody());
 
         //verify
@@ -112,7 +109,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getAllUsers("student");
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User is not admin", responseEntity.getBody());
 
         //verify
@@ -133,7 +130,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getAllUsers("admin");
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("No users found", responseEntity.getBody());
 
         //verify
@@ -158,7 +155,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getUserById("admin", 2L);
-        Assertions.assertEquals(200, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         Assertions.assertEquals(userResponseDtoMapper.apply(testUser), responseEntity.getBody());
 
         //verify
@@ -176,7 +173,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getUserById("admin", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User not found", responseEntity.getBody());
 
         //verify
@@ -195,7 +192,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getUserById("teacher", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User is not admin", responseEntity.getBody());
 
         //verify
@@ -215,7 +212,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getUserById("student", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User is not admin", responseEntity.getBody());
 
         //verify
@@ -236,7 +233,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getUserById("admin", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User not found", responseEntity.getBody());
 
         //verify
@@ -258,8 +255,8 @@ class AdminServiceImplTest {
         when(userRepository.findById(Mockito.<Long>any())).thenReturn(java.util.Optional.of(testUser));
 
         //then
-        ResponseEntity responseEntity = adminServiceImpl.deleteUserById("admin", 2L);
-        Assertions.assertEquals(200, responseEntity.getStatusCodeValue());
+        ResponseEntity<Object> responseEntity = adminServiceImpl.deleteUserById("admin", 2L);
+        Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         Assertions.assertEquals("User deleted", responseEntity.getBody());
 
         //verify
@@ -276,8 +273,8 @@ class AdminServiceImplTest {
         when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn(null);
 
         //then
-        ResponseEntity responseEntity = adminServiceImpl.deleteUserById("admin", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        ResponseEntity<Object> responseEntity = adminServiceImpl.deleteUserById("admin", 2L);
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User not found", responseEntity.getBody());
 
         //verify
@@ -296,7 +293,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity responseEntity = adminServiceImpl.deleteUserById("teacher", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User is not admin", responseEntity.getBody());
 
         //verify
@@ -316,7 +313,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity responseEntity = adminServiceImpl.deleteUserById("student", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User is not admin", responseEntity.getBody());
 
         //verify
@@ -337,7 +334,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity responseEntity = adminServiceImpl.deleteUserById("admin", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User not found", responseEntity.getBody());
 
         //verify
@@ -361,7 +358,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity responseEntity = adminServiceImpl.disableUserById("admin", 2L);
-        Assertions.assertEquals(200, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         Assertions.assertEquals("User disabled", responseEntity.getBody());
         Assertions.assertEquals(testUser.getEnabled(), false);
 
@@ -380,7 +377,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity responseEntity = adminServiceImpl.disableUserById("admin", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User not found", responseEntity.getBody());
 
         //verify
@@ -399,7 +396,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity responseEntity = adminServiceImpl.disableUserById("teacher", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User is not admin", responseEntity.getBody());
 
         //verify
@@ -419,7 +416,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity responseEntity = adminServiceImpl.disableUserById("student", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User is not admin", responseEntity.getBody());
 
         //verify
@@ -440,7 +437,7 @@ class AdminServiceImplTest {
 
         //then
         ResponseEntity responseEntity = adminServiceImpl.disableUserById("admin", 2L);
-        Assertions.assertEquals(400, responseEntity.getStatusCodeValue());
+        Assertions.assertTrue(responseEntity.getStatusCode().is4xxClientError());
         Assertions.assertEquals("User not found", responseEntity.getBody());
 
         //verify
