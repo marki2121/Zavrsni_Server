@@ -1,7 +1,7 @@
 package com.example.zavrsnirad.controller;
 
-import com.example.zavrsnirad.dto.UpdatePasswordDTO;
-import com.example.zavrsnirad.dto.UpdateProfileDTO;
+import com.example.zavrsnirad.dto.request.UpdatePasswordDTO;
+import com.example.zavrsnirad.dto.request.UpdateProfileDTO;
 import com.example.zavrsnirad.service.UserProfileService;
 import com.example.zavrsnirad.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;

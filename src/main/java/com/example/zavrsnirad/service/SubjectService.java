@@ -1,6 +1,6 @@
 package com.example.zavrsnirad.service;
 
-import com.example.zavrsnirad.dto.SubjectCreateDTO;
+import com.example.zavrsnirad.dto.request.SubjectCreateDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface SubjectService {

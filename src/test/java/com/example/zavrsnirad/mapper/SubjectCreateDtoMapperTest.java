@@ -1,6 +1,6 @@
 package com.example.zavrsnirad.mapper;
 
-import com.example.zavrsnirad.dto.SubjectCreateDTO;
+import com.example.zavrsnirad.dto.request.SubjectCreateDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

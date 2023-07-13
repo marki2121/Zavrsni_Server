@@ -1,6 +1,6 @@
 package com.example.zavrsnirad.controller;
 
-import com.example.zavrsnirad.dto.SubjectCreateDTO;
+import com.example.zavrsnirad.dto.request.SubjectCreateDTO;
 import com.example.zavrsnirad.service.SubjectService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;

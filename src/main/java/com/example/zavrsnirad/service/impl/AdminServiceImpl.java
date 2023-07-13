@@ -1,7 +1,7 @@
 package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
-import com.example.zavrsnirad.dto.UserResponseDTO;
+import com.example.zavrsnirad.dto.response.UserResponseDTO;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.UserResponseDtoMapper;
 import com.example.zavrsnirad.repository.UserRepository;

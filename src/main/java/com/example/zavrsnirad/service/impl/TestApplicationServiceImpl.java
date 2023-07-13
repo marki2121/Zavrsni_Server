@@ -1,6 +1,6 @@
 package com.example.zavrsnirad.service.impl;
 
-import com.example.zavrsnirad.dto.TestApplicationResponseDTO;
+import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
 import com.example.zavrsnirad.entity.Test;
 import com.example.zavrsnirad.entity.TestApplication;
 import com.example.zavrsnirad.entity.User;

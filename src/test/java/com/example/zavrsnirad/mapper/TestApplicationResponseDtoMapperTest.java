@@ -1,5 +1,6 @@
 package com.example.zavrsnirad.mapper;
 
+import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
 import com.example.zavrsnirad.entity.Subject;
 import com.example.zavrsnirad.entity.TestApplication;
 import com.example.zavrsnirad.entity.User;
@@ -38,7 +39,7 @@ class TestApplicationResponseDtoMapperTest {
         when(testApplication.getStudent()).thenReturn(user);
 
 
-        com.example.zavrsnirad.dto.TestApplicationResponseDTO actualApplyResult = new TestApplicationResponseDtoMapper().apply(testApplication);
+        TestApplicationResponseDTO actualApplyResult = new TestApplicationResponseDtoMapper().apply(testApplication);
 
         assertEquals(1L, actualApplyResult.id());
         assertEquals(1, actualApplyResult.grade());

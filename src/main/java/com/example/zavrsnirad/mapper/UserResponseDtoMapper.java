@@ -1,6 +1,6 @@
 package com.example.zavrsnirad.mapper;
 
-import com.example.zavrsnirad.dto.UserResponseDTO;
+import com.example.zavrsnirad.dto.response.UserResponseDTO;
 import com.example.zavrsnirad.entity.User;
 import org.springframework.stereotype.Service;
 

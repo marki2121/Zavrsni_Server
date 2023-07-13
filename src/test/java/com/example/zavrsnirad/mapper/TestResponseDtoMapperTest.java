@@ -1,5 +1,6 @@
 package com.example.zavrsnirad.mapper;
 
+import com.example.zavrsnirad.dto.response.TestResponseDTO;
 import com.example.zavrsnirad.entity.Subject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class TestResponseDtoMapperTest {
         when(test.getSubject()).thenReturn(new Subject());
 
 
-        com.example.zavrsnirad.dto.TestResponseDTO actualApplyResult = testResponseDtoMapper.apply(test);
+        TestResponseDTO actualApplyResult = testResponseDtoMapper.apply(test);
 
         assertEquals("Test Note", actualApplyResult.note());
         assertEquals(1L, actualApplyResult.id());

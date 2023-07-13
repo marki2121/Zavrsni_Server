@@ -1,9 +1,9 @@
 package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
-import com.example.zavrsnirad.dto.TestApplicationResponseDTO;
-import com.example.zavrsnirad.dto.TestCreateDTO;
-import com.example.zavrsnirad.dto.TestResponseDTO;
+import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
+import com.example.zavrsnirad.dto.request.TestCreateDTO;
+import com.example.zavrsnirad.dto.response.TestResponseDTO;
 import com.example.zavrsnirad.entity.Subject;
 import com.example.zavrsnirad.entity.Test;
 import com.example.zavrsnirad.entity.TestApplication;

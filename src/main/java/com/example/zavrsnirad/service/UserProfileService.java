@@ -1,7 +1,7 @@
 package com.example.zavrsnirad.service;
 
-import com.example.zavrsnirad.dto.UpdateProfileDTO;
-import com.example.zavrsnirad.dto.UserDTO;
+import com.example.zavrsnirad.dto.request.UpdateProfileDTO;
+import com.example.zavrsnirad.dto.request.UserDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface UserProfileService {

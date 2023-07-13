@@ -1,5 +1,6 @@
 package com.example.zavrsnirad.dto;
 
+import com.example.zavrsnirad.dto.request.SignupDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

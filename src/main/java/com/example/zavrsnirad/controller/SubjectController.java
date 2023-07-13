@@ -1,6 +1,6 @@
 package com.example.zavrsnirad.controller;
 
-import com.example.zavrsnirad.dto.SubjectCreateDTO;
+import com.example.zavrsnirad.dto.request.SubjectCreateDTO;
 import com.example.zavrsnirad.service.SubjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

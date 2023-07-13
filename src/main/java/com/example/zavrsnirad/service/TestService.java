@@ -1,6 +1,6 @@
 package com.example.zavrsnirad.service;
 
-import com.example.zavrsnirad.dto.TestCreateDTO;
+import com.example.zavrsnirad.dto.request.TestCreateDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface TestService {

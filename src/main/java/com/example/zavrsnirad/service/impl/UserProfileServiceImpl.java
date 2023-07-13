@@ -1,7 +1,7 @@
 package com.example.zavrsnirad.service.impl;
 
-import com.example.zavrsnirad.dto.UpdateProfileDTO;
-import com.example.zavrsnirad.dto.UserDTO;
+import com.example.zavrsnirad.dto.request.UpdateProfileDTO;
+import com.example.zavrsnirad.dto.request.UserDTO;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.entity.UserProfile;
 import com.example.zavrsnirad.mapper.UserDtoMapper;

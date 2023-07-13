@@ -1,8 +1,8 @@
 package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
-import com.example.zavrsnirad.dto.SignupDTO;
-import com.example.zavrsnirad.dto.UpdatePasswordDTO;
+import com.example.zavrsnirad.dto.request.SignupDTO;
+import com.example.zavrsnirad.dto.request.UpdatePasswordDTO;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.entity.UserProfile;
 import com.example.zavrsnirad.mapper.UserDtoMapper;
