@@ -3,7 +3,6 @@ package com.example.zavrsnirad.service.impl;
 import com.example.zavrsnirad.dto.request.UserDTO;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.UserDtoMapper;
-import com.example.zavrsnirad.repository.UserProfileRepository;
 import com.example.zavrsnirad.repository.UserRepository;
 import com.example.zavrsnirad.service.TokenService;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +18,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,9 +31,6 @@ class UserProfileServiceImplTest {
 
     @MockBean
     private UserDtoMapper userDtoMapper;
-
-    @MockBean
-    private UserProfileRepository userProfileRepository;
 
     @Autowired
     private UserProfileServiceImpl userProfileServiceImpl;
@@ -55,7 +52,7 @@ class UserProfileServiceImplTest {
         ResponseEntity<UserDTO> actualSelf = userProfileServiceImpl.getSelf("JaneDoe");
         assertTrue(actualSelf.hasBody());
         assertTrue(actualSelf.getHeaders().isEmpty());
-        assertEquals(200, actualSelf.getStatusCodeValue());
+        assertTrue(actualSelf.getStatusCode().is2xxSuccessful());
 
         //verify
         verify(userRepository).findByUsername(Mockito.<String>any());

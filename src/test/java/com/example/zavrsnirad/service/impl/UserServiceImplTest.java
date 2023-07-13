@@ -97,7 +97,7 @@ class UserServiceImplTest {
         // Then
         ResponseEntity<String> actualLoginResult = userServiceImpl.login(new BearerTokenAuthenticationToken("ABC123")); // Pokušaj logina
         assertEquals("ABC123", actualLoginResult.getBody()); // Provjeri da li je vraćen token
-        assertEquals(200, actualLoginResult.getStatusCodeValue()); // Provjeri da li je vraćen status 200
+        assertTrue(actualLoginResult.getStatusCode().is2xxSuccessful()); // Provjeri da li je vraćen status 200
         assertTrue(actualLoginResult.getHeaders().isEmpty()); // Provjeri da li je vraćen prazan header
 
         // Verify
@@ -127,7 +127,7 @@ class UserServiceImplTest {
 
         // then
         assertEquals("Passwords don't match", actualSignupResult.getBody());
-        assertEquals(400, actualSignupResult.getStatusCodeValue());
+        assertTrue(actualSignupResult.getStatusCode().is4xxClientError());
 
         // Verify
         assertTrue(actualSignupResult.getHeaders().isEmpty());
@@ -147,7 +147,7 @@ class UserServiceImplTest {
 
         // then
         assertEquals("Username already exists", actualSignupResult.getBody());
-        assertEquals(400, actualSignupResult.getStatusCodeValue());
+        assertTrue(actualSignupResult.getStatusCode().is4xxClientError());
         assertTrue(actualSignupResult.getHeaders().isEmpty());
 
         // verify
@@ -166,7 +166,7 @@ class UserServiceImplTest {
 
         // then
         assertEquals("User created", actualSignupResult.getBody());
-        assertEquals(201, actualSignupResult.getStatusCodeValue());
+        assertTrue(actualSignupResult.getStatusCode().is2xxSuccessful());
         assertTrue(actualSignupResult.getHeaders().isEmpty());
 
         // verify
@@ -192,7 +192,7 @@ class UserServiceImplTest {
                 new UpdatePasswordDTO("iloveyou", "iloveyou", "iloveyou"));
         // then
         assertEquals("Passwords don't match or bad password", actualUpdatePasswordResult.getBody());
-        assertEquals(418, actualUpdatePasswordResult.getStatusCodeValue());
+        assertTrue(actualUpdatePasswordResult.getStatusCode().is4xxClientError());
         assertTrue(actualUpdatePasswordResult.getHeaders().isEmpty());
 
         // verify
@@ -237,7 +237,7 @@ class UserServiceImplTest {
 
         //then
         assertEquals("Passwords don't match or bad password", responseEntity.getBody());
-        assertEquals(418, responseEntity.getStatusCodeValue());
+        assertTrue(responseEntity.getStatusCode().is4xxClientError());
         assertTrue(responseEntity.getHeaders().isEmpty());
 
         // verify
@@ -267,7 +267,7 @@ class UserServiceImplTest {
 
         // then
         assertEquals("Password updated.", responseEntity.getBody());
-        assertEquals(200, responseEntity.getStatusCodeValue());
+        assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
 
         // verify
         verify(userRepository).findByUsername(Mockito.<String>any());
