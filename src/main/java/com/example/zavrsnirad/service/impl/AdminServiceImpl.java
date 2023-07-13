@@ -114,6 +114,8 @@ public class AdminServiceImpl implements AdminService {
         Optional<User> userById = userRepository.findById(id);
         if(userById.isEmpty()) return ResponseEntity.badRequest().body("User not found");
 
+        if(userById.get().getEnabled()) return ResponseEntity.badRequest().body("User is already enabled");
+
         userById.get().setEnabled(true);
 
         userRepository.save(userById.get());
@@ -175,6 +177,8 @@ public class AdminServiceImpl implements AdminService {
         else return ResponseEntity.badRequest().body("User is already student");
     }
 
+
+    //TODO: change this function bad implementation
     @Override
     public ResponseEntity<Object> changePassword(String authorization, Long id, String newPassword) {
         String username = tokenService.getUsernameFromToken(authorization);
