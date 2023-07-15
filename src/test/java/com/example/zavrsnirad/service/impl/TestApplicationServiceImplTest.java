@@ -2,6 +2,7 @@ package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.entity.Subject;
+import com.example.zavrsnirad.entity.TestApplication;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.TestApplicationResponseDtoMapper;
 import com.example.zavrsnirad.repository.TestApplicationRepository;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -158,10 +161,62 @@ class TestApplicationServiceImplTest {
     }
 
     @Test
+    @DisplayName("Test getAllApplications() and succeed")
     void getAllApplications() {
+        //given
+        Subject subject = new Subject(1L, "Subject", "asd",5, 1, 3, null);
+        Set<Subject> subjects = Set.of(subject);
+        User user = new User(1L, "username", "password", Role.STUDENT, true, null, subjects);
+        subject.setStudents(Set.of(user));
+        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, null, "da");
+        com.example.zavrsnirad.entity.TestApplication testApplication = new com.example.zavrsnirad.entity.TestApplication(1L, test, user, 1, "da", true);
+
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("username");
+        when(userRepository.findByUsername("username")).thenReturn(java.util.Optional.of(user));
+        when(testApplicationRepository.findAllByStudent(user)).thenReturn(List.of(testApplication));
+
+        //then
+        ResponseEntity<Object> response = testApplicationService.getAllApplications("token");
+        assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 
     @Test
+    @DisplayName("Test getAllApplications() and fail because user is not found")
+    void getAllApplicationsFail() {
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("username");
+
+        //then
+        ResponseEntity<Object> response = testApplicationService.getAllApplications("token");
+        assertTrue(response.getStatusCode().is4xxClientError());
+        assertEquals(response.getBody(), "User not found");
+    }
+
+    @Test
+    @DisplayName("Test getAllApplications() and fail because user has no tests")
+    void getAllApplicationsFail2() {
+        //given
+        Subject subject = new Subject(1L, "Subject", "asd",5, 1, 3, null);
+        Set<Subject> subjects = Set.of(subject);
+        User user = new User(1L, "username", "password", Role.STUDENT, true, null, subjects);
+        subject.setStudents(Set.of(user));
+        List<TestApplication> testApplication = new ArrayList<>();
+
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("username");
+        when(userRepository.findByUsername("username")).thenReturn(java.util.Optional.of(user));
+        when(testApplicationRepository.findAllByStudent(user)).thenReturn(testApplication);
+
+        //then
+        ResponseEntity<Object> response = testApplicationService.getAllApplications("token");
+        assertTrue(response.getStatusCode().is4xxClientError());
+        assertEquals(response.getBody(), "You have not applied for any tests");
+    }
+
+    @Test
+    @DisplayName("Test deleteApplication() and succeed")
     void deleteApplication() {
+
     }
 }
