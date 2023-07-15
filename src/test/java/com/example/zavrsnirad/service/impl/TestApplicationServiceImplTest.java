@@ -217,6 +217,76 @@ class TestApplicationServiceImplTest {
     @Test
     @DisplayName("Test deleteApplication() and succeed")
     void deleteApplication() {
+        //given
+        Subject subject = new Subject(1L, "Subject", "asd",5, 1, 3, null);
+        Set<Subject> subjects = Set.of(subject);
+        User user = new User(1L, "username", "password", Role.STUDENT, true, null, subjects);
+        subject.setStudents(Set.of(user));
+        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, null, "da");
+        com.example.zavrsnirad.entity.TestApplication testApplication = new com.example.zavrsnirad.entity.TestApplication(1L, test, user, 1, "da", true);
 
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("username");
+        when(userRepository.findByUsername("username")).thenReturn(java.util.Optional.of(user));
+        when(testApplicationRepository.findById(1L)).thenReturn(java.util.Optional.of(testApplication));
+
+        //then
+        ResponseEntity<Object> response = testApplicationService.deleteApplication("token", 1L);
+        assertTrue(response.getStatusCode().is2xxSuccessful());
+        assertEquals(response.getBody(), "Successfully deleted test application");
+    }
+
+    @Test
+    @DisplayName("Test deleteApplication() and fail because user is not found")
+    void deleteApplicationFail() {
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("username");
+
+        //then
+        ResponseEntity<Object> response = testApplicationService.deleteApplication("token", 1L);
+        assertTrue(response.getStatusCode().is4xxClientError());
+        assertEquals(response.getBody(), "User not found");
+    }
+
+    @Test
+    @DisplayName("Test deleteApplication() and fail because test application is not found")
+    void deleteApplicationFail2() {
+        //given
+        Subject subject = new Subject(1L, "Subject", "asd",5, 1, 3, null);
+        Set<Subject> subjects = Set.of(subject);
+        User user = new User(1L, "username", "password", Role.STUDENT, true, null, subjects);
+        subject.setStudents(Set.of(user));
+
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("username");
+        when(userRepository.findByUsername("username")).thenReturn(java.util.Optional.of(user));
+
+        //then
+        ResponseEntity<Object> response = testApplicationService.deleteApplication("token", 1L);
+        assertTrue(response.getStatusCode().is4xxClientError());
+        assertEquals(response.getBody(), "Test application not found");
+    }
+
+    @Test
+    @DisplayName("Test deleteApplication() and fail because test application is not users")
+    void deleteApplicationFail3() {
+        //given
+        Subject subject = new Subject(1L, "Subject", "asd",5, 1, 3, null);
+        Set<Subject> subjects = Set.of(subject);
+        User user = new User(1L, "username", "password", Role.STUDENT, true, null, subjects);
+        User user2 = new User(2L, "username2", "password", Role.STUDENT, true, null, subjects);
+        subject.setStudents(Set.of(user));
+        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, null, "da");
+        com.example.zavrsnirad.entity.TestApplication testApplication = new com.example.zavrsnirad.entity.TestApplication(1L, test, user2, 1, "da", true);
+
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("username");
+        when(userRepository.findByUsername("username")).thenReturn(java.util.Optional.of(user));
+        when(testApplicationRepository.findById(1L)).thenReturn(java.util.Optional.of(testApplication));
+
+        //then
+        ResponseEntity<Object> response = testApplicationService.deleteApplication("token", 1L);
+        assertTrue(response.getStatusCode().is4xxClientError());
+        assertEquals(response.getBody(), "You are not the owner of this test application");
     }
 }
