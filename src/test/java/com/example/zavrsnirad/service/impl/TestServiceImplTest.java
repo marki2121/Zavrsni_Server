@@ -224,7 +224,196 @@ class TestServiceImplTest {
     }
 
     @Test
+    @DisplayName("Test getTestsForSubject when Subject doesn't exist")
+    void getTestsForSubjectSubjectDoesntExist() {
+        //given
+        User user = new User(1L, "username", "password", Role.TEACHER, true,null);
+
+        //when
+        when(subjectRepository.findById(1L)).thenReturn(Optional.empty());
+        when(tokenService.getUsernameFromToken("token")).thenReturn("user");
+        when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
+
+        //then
+        ResponseEntity<Object> response = testServiceImpl.getTestsForSubject("token", 1L);
+        Assertions.assertTrue(response.getStatusCode().is4xxClientError());
+        Assertions.assertEquals("Subject not found", response.getBody());
+    }
+
+    @Test
+    @DisplayName("Test getTestsForSubject when User is not a teacher of this subject")
+    void getTestsForSubjectWrongUserSubject() {
+        //given
+        User user = new User(1L, "username", "password", Role.TEACHER, true,null);
+        User user2 = new User(2L, "username2", "password", Role.TEACHER, true,null);
+        Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user2);
+
+        //when
+        when(subjectRepository.findById(1L)).thenReturn(java.util.Optional.of(subject));
+        when(tokenService.getUsernameFromToken("token")).thenReturn("user");
+        when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
+
+        //then
+        ResponseEntity<Object> response = testServiceImpl.getTestsForSubject("token", 1L);
+        Assertions.assertTrue(response.getStatusCode().is4xxClientError());
+        Assertions.assertEquals("User is not a teacher of this subject", response.getBody());
+    }
+
+    @Test
+    @DisplayName("Test getTestsForSubject when User doesn't exist")
+    void getTestsForSubjectUserDoesntExist() {
+        //given
+        User user = new User(1L, "username", "password", Role.TEACHER, true,null);
+        Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
+
+        //when
+        when(subjectRepository.findById(1L)).thenReturn(java.util.Optional.of(subject));
+        when(tokenService.getUsernameFromToken("token")).thenReturn("user");
+        when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
+
+        //then
+        ResponseEntity<Object> response = testServiceImpl.getTestsForSubject("token", 1L);
+        Assertions.assertTrue(response.getStatusCode().is4xxClientError());
+        Assertions.assertEquals("User not found", response.getBody());
+    }
+
+    @Test
+    @DisplayName("Test deleteTest success")
     void deleteTest() {
+        //given
+        User user = new User(1L, "username", "password", Role.TEACHER, true,null);
+        Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
+        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, new Date(), "test");
+        Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
+        tests.add(test);
+        subject.setTests(tests);
+
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("user");
+        when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
+        when(testRepository.findById(1L)).thenReturn(java.util.Optional.of(test));
+        when(subjectRepository.findById(1L)).thenReturn(java.util.Optional.of(subject));
+
+        //then
+        ResponseEntity<Object> response = testServiceImpl.deleteTest("token", 1L, 1L);
+        Assertions.assertTrue(response.getStatusCode().is2xxSuccessful());
+        Assertions.assertEquals("Test deleted", response.getBody());
+    }
+
+    @Test
+    @DisplayName("Test deleteTest when User is not a teacher of this subject")
+    void deleteTestWrongUserSubject() {
+        //given
+        User user = new User(1L, "username", "password", Role.TEACHER, true,null);
+        User user2 = new User(2L, "username2", "password", Role.TEACHER, true,null);
+        Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user2);
+        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, new Date(), "test");
+        Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
+        tests.add(test);
+        subject.setTests(tests);
+
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("user");
+        when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
+        when(testRepository.findById(1L)).thenReturn(java.util.Optional.of(test));
+        when(subjectRepository.findById(1L)).thenReturn(java.util.Optional.of(subject));
+
+        //then
+        ResponseEntity<Object> response = testServiceImpl.deleteTest("token", 1L, 1L);
+        Assertions.assertTrue(response.getStatusCode().is4xxClientError());
+        Assertions.assertEquals("User is not a teacher of this subject", response.getBody());
+    }
+
+    @Test
+    @DisplayName("Test deleteTest when User doesn't exist")
+    void deleteTestUserDoesntExist() {
+        //given
+        User user = new User(1L, "username", "password", Role.TEACHER, true,null);
+        Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
+        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, new Date(), "test");
+        Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
+        tests.add(test);
+        subject.setTests(tests);
+
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("user");
+        when(userRepository.findByUsername("user")).thenReturn(Optional.empty());
+        when(testRepository.findById(1L)).thenReturn(java.util.Optional.of(test));
+        when(subjectRepository.findById(1L)).thenReturn(java.util.Optional.of(subject));
+
+        //then
+        ResponseEntity<Object> response = testServiceImpl.deleteTest("token", 1L, 1L);
+        Assertions.assertTrue(response.getStatusCode().is4xxClientError());
+        Assertions.assertEquals("User not found", response.getBody());
+    }
+
+    @Test
+    @DisplayName("Test deleteTest when Test doesn't exist")
+    void deleteTestTestDoesntExist() {
+        //given
+        User user = new User(1L, "username", "password", Role.TEACHER, true,null);
+        Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
+        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, new Date(), "test");
+        Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
+        tests.add(test);
+        subject.setTests(tests);
+
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("user");
+        when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
+        when(testRepository.findById(1L)).thenReturn(Optional.empty());
+        when(subjectRepository.findById(1L)).thenReturn(java.util.Optional.of(subject));
+
+        //then
+        ResponseEntity<Object> response = testServiceImpl.deleteTest("token", 1L, 2L);
+        Assertions.assertTrue(response.getStatusCode().is4xxClientError());
+        Assertions.assertEquals("Test not found", response.getBody());
+    }
+
+    @Test
+    @DisplayName("Test deleteTest when Subject doesn't exist")
+    void deleteTestSubjectDoesntExist() {
+        //given
+        User user = new User(1L, "username", "password", Role.TEACHER, true,null);
+        Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
+        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, new Date(), "test");
+        Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
+        tests.add(test);
+        subject.setTests(tests);
+
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("user");
+        when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
+        when(testRepository.findById(1L)).thenReturn(java.util.Optional.of(test));
+        when(subjectRepository.findById(1L)).thenReturn(Optional.empty());
+
+        //then
+        ResponseEntity<Object> response = testServiceImpl.deleteTest("token", 1L, 1L);
+        Assertions.assertTrue(response.getStatusCode().is4xxClientError());
+        Assertions.assertEquals("Subject not found", response.getBody());
+    }
+
+    @Test
+    @DisplayName("Test deleteTest when Test is not in Subject")
+    void deleteTestTestNotInSubject() {
+        //given
+        User user = new User(1L, "username", "password", Role.TEACHER, true, null);
+        Subject subject = new Subject(1L, "subject", "subject", 1, 1, 2, user);
+        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, new Date(), "test");
+        Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
+        tests.add(test);
+        subject.setTests(tests);
+
+        //when
+        when(tokenService.getUsernameFromToken("token")).thenReturn("user");
+        when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
+        when(testRepository.findById(1L)).thenReturn(java.util.Optional.of(test));
+        when(subjectRepository.findById(1L)).thenReturn(java.util.Optional.of(subject));
+
+        //then
+        ResponseEntity<Object> response = testServiceImpl.deleteTest("token", 1L, 2L);
+        Assertions.assertTrue(response.getStatusCode().is4xxClientError());
+        Assertions.assertEquals("Test not found", response.getBody());
     }
 
     @Test
