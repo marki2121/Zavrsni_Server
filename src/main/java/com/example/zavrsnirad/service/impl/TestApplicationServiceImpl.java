@@ -5,7 +5,6 @@ import com.example.zavrsnirad.entity.Test;
 import com.example.zavrsnirad.entity.TestApplication;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.TestApplicationResponseDtoMapper;
-import com.example.zavrsnirad.repository.SubjectRepository;
 import com.example.zavrsnirad.repository.TestApplicationRepository;
 import com.example.zavrsnirad.repository.TestRepository;
 import com.example.zavrsnirad.repository.UserRepository;
@@ -24,15 +23,13 @@ public class TestApplicationServiceImpl implements TestApplicationService {
     private final TokenService tokenService;
     private final UserRepository userRepository;
     private final TestRepository testRepository;
-    private final SubjectRepository subjectRepository;
     private final TestApplicationResponseDtoMapper testApplicationResponseDtoMapper;
 
-    public TestApplicationServiceImpl(TestApplicationRepository testApplicationRepository, TokenService tokenService, UserRepository userRepository, TestRepository testRepository, SubjectRepository subjectRepository, TestApplicationResponseDtoMapper testApplicationResponseDtoMapper) {
+    public TestApplicationServiceImpl(TestApplicationRepository testApplicationRepository, TokenService tokenService, UserRepository userRepository, TestRepository testRepository, TestApplicationResponseDtoMapper testApplicationResponseDtoMapper) {
         this.testApplicationRepository = testApplicationRepository;
         this.tokenService = tokenService;
         this.userRepository = userRepository;
         this.testRepository = testRepository;
-        this.subjectRepository = subjectRepository;
         this.testApplicationResponseDtoMapper = testApplicationResponseDtoMapper;
     }
 
