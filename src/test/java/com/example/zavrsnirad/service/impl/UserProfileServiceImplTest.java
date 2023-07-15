@@ -3,6 +3,7 @@ package com.example.zavrsnirad.service.impl;
 import com.example.zavrsnirad.dto.request.UserDTO;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.UserDtoMapper;
+import com.example.zavrsnirad.repository.UserProfileRepository;
 import com.example.zavrsnirad.repository.UserRepository;
 import com.example.zavrsnirad.service.TokenService;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +38,8 @@ class UserProfileServiceImplTest {
 
     @MockBean
     private UserRepository userRepository;
+    @MockBean
+    private UserProfileRepository userProfileRepository;
 
     @Test
     @DisplayName("Test GetSelf and succeed")

@@ -203,7 +203,24 @@ class TestServiceImplTest {
     }
 
     @Test
+    @DisplayName("Test getTestsForSubject success")
     void getTestsForSubject() {
+        //given
+        User user = new User(1L, "username", "password", Role.TEACHER, true,null);
+        Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
+        Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
+        tests.add(new com.example.zavrsnirad.entity.Test(1L, subject, new Date(), "test"));
+        subject.setTests(tests);
+
+        //when
+        when(subjectRepository.findById(1L)).thenReturn(java.util.Optional.of(subject));
+        when(tokenService.getUsernameFromToken("token")).thenReturn("user");
+        when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
+
+        //then
+        ResponseEntity<Object> response = testServiceImpl.getTestsForSubject("token", 1L);
+        Assertions.assertTrue(response.getStatusCode().is2xxSuccessful());
+        Assertions.assertNotNull(response.getBody());
     }
 
     @Test
