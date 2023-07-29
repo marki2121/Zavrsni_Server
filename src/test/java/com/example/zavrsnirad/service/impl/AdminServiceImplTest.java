@@ -50,7 +50,7 @@ class AdminServiceImplTest {
         when(tokenService.getUsernameFromToken(Mockito.<String>any())).thenReturn("admin");
         when(userRepository.findByUsername(Mockito.<String>any())).thenReturn(java.util.Optional.of(user));
         when(userRepository.findAll()).thenReturn(List.of(user));
-        when(userResponseDtoMapper.apply(Mockito.<User>any())).thenReturn(userResponseDTO);
+        when(userResponseDtoMapper.apply(Mockito.   <User>any())).thenReturn(userResponseDTO);
 
         //then
         ResponseEntity<Object> responseEntity = adminServiceImpl.getAllUsers("admin");

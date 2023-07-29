@@ -116,4 +116,18 @@
             <column name="test_graded" type="BOOLEAN" />
         </createTable>
     </changeSet>
+    <changeSet id="addedAdminUserProfile" author="Marko">
+        <insert tableName="user_profile">
+            <column name="id">1</column>
+            <column name="first_name">Admin</column>
+            <column name="last_name">Admin</column>
+            <column name="email">admin@admin.com</column>
+            <column name="address">localhost</column>
+            <column name="city">localhost</column>
+            <column name="zip_code">127.0.0.1</column>
+            <column name="country">localhost</column>
+            <column name="about_me">I am the only god on this page</column>
+            <column name="user_id">1</column>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 User user = new User();
                 UserProfile userProfile = new UserProfile();
 
-                // postavljanje vrijednosti atributa
+                // TODO: promini na mappera
                 user.setUsername(data.username());
                 user.setPassword(passwordEncoder.encode(data.password()));
                 user.setRole(Role.STUDENT);
