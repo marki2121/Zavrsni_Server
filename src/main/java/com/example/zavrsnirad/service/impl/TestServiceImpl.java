@@ -1,8 +1,8 @@
 package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
-import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
 import com.example.zavrsnirad.dto.request.TestCreateDTO;
+import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
 import com.example.zavrsnirad.dto.response.TestResponseDTO;
 import com.example.zavrsnirad.entity.Subject;
 import com.example.zavrsnirad.entity.Test;
@@ -19,6 +19,8 @@ import com.example.zavrsnirad.service.TokenService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,10 +46,11 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public ResponseEntity<Object> createTest(String authorization, Long id, TestCreateDTO data) {
+    public ResponseEntity<Object> createTest(String authorization, Long id, TestCreateDTO data) throws ParseException {
         String username = tokenService.getUsernameFromToken(authorization);
         Optional<User> user = userRepository.findByUsername(username);
         Optional<Subject> subject = subjectRepository.findById(id);
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(user.get().getRole().equals(Role.STUDENT)) return ResponseEntity.badRequest().body("User is not a teacher");
@@ -59,7 +62,7 @@ public class TestServiceImpl implements TestService {
 
         Test test = new Test();
         test.setSubject(subject.get());
-        test.setTestDate(data.date());
+        test.setTestDate(formater.parse(data.date()));
         if(data.note() != null) test.setTestNote(data.note());
         else test.setTestNote("");
 
@@ -111,10 +114,11 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public ResponseEntity<Object> updateTest(String authorization, Long id, Long testId, TestCreateDTO data) {
+    public ResponseEntity<Object> updateTest(String authorization, Long id, Long testId, TestCreateDTO data) throws ParseException {
         String username = tokenService.getUsernameFromToken(authorization);
         Optional<User> user = userRepository.findByUsername(username);
         Optional<Subject> subject = subjectRepository.findById(id);
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(user.get().getRole().equals(Role.STUDENT)) return ResponseEntity.badRequest().body("User is not a teacher");
@@ -124,7 +128,7 @@ public class TestServiceImpl implements TestService {
 
         for(Test test : subject.get().getTests()) {
             if(test.getId().equals(testId)) {
-                if(data.date() != null) test.setTestDate(data.date());
+                if(data.date() != null) test.setTestDate(formater.parse(data.date()));
                 if(data.note() != null) test.setTestNote(data.note());
                 testRepository.save(test);
                 return ResponseEntity.ok().body("Test updated");

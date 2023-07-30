@@ -1,6 +1,7 @@
 package com.example.zavrsnirad.dto.request;
 
-public record UserDTO(String username,
+public record UserDTO(Long id,
+                      String username,
                       String firstName,
                       String lastName,
                       String email,

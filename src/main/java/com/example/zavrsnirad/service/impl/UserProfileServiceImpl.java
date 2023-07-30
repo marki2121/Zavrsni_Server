@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 // Ova klasa predstavlja servis korisnickog profila koji se koristi za pozivanje metoda iz repozitorija te za logiku aplikacije
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
@@ -89,5 +91,11 @@ public class UserProfileServiceImpl implements UserProfileService {
         userProfileRepository.save(userProfile);
 
         return new ResponseEntity<>("Updated profile", HttpStatus.ACCEPTED);
+    }
+
+    @Override
+    public ResponseEntity<?> getUsersByUsername(String username) {
+        List<User> users = userRepository.findAllByUsernameContaining(username);
+        return ResponseEntity.ok(userDtoMapper.map(users));
     }
 }

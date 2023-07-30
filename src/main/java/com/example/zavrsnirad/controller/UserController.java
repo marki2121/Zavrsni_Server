@@ -35,4 +35,9 @@ public class UserController {
     public ResponseEntity<String> updateSelfProfile(@RequestHeader String Authorization, @RequestBody UpdateProfileDTO data){
         return userProfileService.updateSelfProfile(Authorization, data);
     }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getUsersByUsername(@PathVariable String username) {
+        return userProfileService.getUsersByUsername(username);
+    }
 }

@@ -148,8 +148,6 @@ public class SubjectServiceImpl implements SubjectService {
 
         Set<Subject> subjects = user.get().getSubjects();
 
-        if(subjects.isEmpty()) return ResponseEntity.badRequest().body("No subjects found");
-
         List<SubjectDTO> subjectDTOS = new ArrayList<>();
 
         for (Subject subject : subjects) {
@@ -216,8 +214,6 @@ public class SubjectServiceImpl implements SubjectService {
         }
 
         Set<User> students = subject.get().getStudents();
-
-        if(students.isEmpty()) return ResponseEntity.badRequest().body("No students found");
 
         List<UserDTO> studentDTOS = new ArrayList<>();
 

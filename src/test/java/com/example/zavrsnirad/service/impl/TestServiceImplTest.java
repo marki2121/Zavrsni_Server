@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
@@ -52,11 +53,11 @@ class TestServiceImplTest {
 
     @Test
     @DisplayName("Test createTest successfully")
-    void createTest() {
+    void createTest() throws ParseException {
         //given
         User user = new User(1L, "username", "password", Role.TEACHER, true,null);
         Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
-        TestCreateDTO testCreateDTO = new TestCreateDTO(new Date(), "test");
+        TestCreateDTO testCreateDTO = new TestCreateDTO("2022-07-07", "test");
         Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
         subject.setTests(tests);
 
@@ -73,11 +74,11 @@ class TestServiceImplTest {
 
     @Test
     @DisplayName("Test createTest with wrong subject id")
-    void createTestWrongSubjectId() {
+    void createTestWrongSubjectId() throws ParseException {
         //given
         User user = new User(1L, "username", "password", Role.TEACHER, true,null);
         Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
-        TestCreateDTO testCreateDTO = new TestCreateDTO(new Date(), "test");
+        TestCreateDTO testCreateDTO = new TestCreateDTO("2022-07-07", "test");
         Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
         subject.setTests(tests);
 
@@ -94,11 +95,11 @@ class TestServiceImplTest {
 
     @Test
     @DisplayName("Test createTest with wrong user")
-    void createTestWrongUser() {
+    void createTestWrongUser() throws ParseException {
         //given
         User user = new User(1L, "username", "password", Role.TEACHER, true,null);
         Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
-        TestCreateDTO testCreateDTO = new TestCreateDTO(new Date(), "test");
+        TestCreateDTO testCreateDTO = new TestCreateDTO("2022-07-07", "test");
         Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
         subject.setTests(tests);
 
@@ -115,11 +116,11 @@ class TestServiceImplTest {
 
     @Test
     @DisplayName("Test createTest with wrong user role")
-    void createTestWrongUserRole() {
+    void createTestWrongUserRole() throws ParseException {
         //given
         User user = new User(1L, "username", "password", Role.STUDENT, true,null);
         Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
-        TestCreateDTO testCreateDTO = new TestCreateDTO(new Date(), "test");
+        TestCreateDTO testCreateDTO = new TestCreateDTO("2022-07-07", "test");
         Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
         subject.setTests(tests);
 
@@ -136,12 +137,12 @@ class TestServiceImplTest {
 
     @Test
     @DisplayName("Test createTest when User is not a teacher of this subject")
-    void createTestWrongUserSubject() {
+    void createTestWrongUserSubject() throws ParseException {
         //given
         User user = new User(1L, "username", "password", Role.TEACHER, true,null);
         User user2 = new User(2L, "username2", "password", Role.TEACHER, true,null);
         Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user2);
-        TestCreateDTO testCreateDTO = new TestCreateDTO(new Date(), "test");
+        TestCreateDTO testCreateDTO = new TestCreateDTO("2022-07-07", "test");
         Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
         subject.setTests(tests);
 
@@ -158,11 +159,11 @@ class TestServiceImplTest {
 
     @Test
     @DisplayName("Test createTest when Subject already has 4 tests")
-    void createTestSubjectHas4Tests() {
+    void createTestSubjectHas4Tests() throws ParseException {
         //given
         User user = new User(1L, "username", "password", Role.TEACHER, true,null);
         Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);
-        TestCreateDTO testCreateDTO = new TestCreateDTO(new Date(), "test");
+        TestCreateDTO testCreateDTO = new TestCreateDTO("2022-07-07", "test");
         Set<com.example.zavrsnirad.entity.Test> tests = new Array2DHashSet<>();
         tests.add(new com.example.zavrsnirad.entity.Test(1L, subject, new Date(), "test"));
         tests.add(new com.example.zavrsnirad.entity.Test(2L, subject, new Date(), "test"));
@@ -183,7 +184,7 @@ class TestServiceImplTest {
 
     @Test
     @DisplayName("Test createTest when Date is invalid")
-    void createTestInvalidDate() {
+    void createTestInvalidDate() throws ParseException {
         //given
         User user = new User(1L, "username", "password", Role.TEACHER, true,null);
         Subject subject = new Subject(1L, "subject", "subject",1, 1, 2, user);

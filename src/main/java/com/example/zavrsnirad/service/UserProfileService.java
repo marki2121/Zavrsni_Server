@@ -9,4 +9,5 @@ public interface UserProfileService {
 
     ResponseEntity<String> updateSelfProfile(String authorization, UpdateProfileDTO data);
 
+    ResponseEntity<?> getUsersByUsername(String username);
 }
