@@ -17,4 +17,8 @@ public interface TestService {
     ResponseEntity<Object> getAllTestsApplications(String authorization, Long id, Long testId);
 
     ResponseEntity<Object> gradeTest(String authorization, Long applicationId, Integer grade);
+
+    ResponseEntity<Object> getAllTestesForSubject(String authorization, Long id);
+
+    ResponseEntity<Object> getAllAppliedTestsForStudent(String authorization, Long id);
 }

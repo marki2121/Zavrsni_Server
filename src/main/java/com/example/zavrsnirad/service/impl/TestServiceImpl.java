@@ -9,6 +9,7 @@ import com.example.zavrsnirad.entity.Test;
 import com.example.zavrsnirad.entity.TestApplication;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.TestApplicationResponseDtoMapper;
+import com.example.zavrsnirad.mapper.TestApplicationResponseMapper;
 import com.example.zavrsnirad.mapper.TestResponseDtoMapper;
 import com.example.zavrsnirad.repository.SubjectRepository;
 import com.example.zavrsnirad.repository.TestApplicationRepository;
@@ -24,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TestServiceImpl implements TestService {
@@ -34,8 +36,9 @@ public class TestServiceImpl implements TestService {
     final private TestResponseDtoMapper testResponseDtoMapper;
     final private TestApplicationResponseDtoMapper testApplicationResponseDtoMapper;
     final private TestApplicationRepository testApplicationRepository;
+    final private TestApplicationResponseMapper testApplicationResponseMapper;
 
-    public TestServiceImpl(TestRepository testRepository, SubjectRepository subjectRepository, UserRepository userRepository, TokenService tokenService, TestResponseDtoMapper testResponseDtoMapper, TestApplicationResponseDtoMapper testApplicationResponseDtoMapper, TestApplicationRepository testApplicationRepository) {
+    public TestServiceImpl(TestRepository testRepository, SubjectRepository subjectRepository, UserRepository userRepository, TokenService tokenService, TestResponseDtoMapper testResponseDtoMapper, TestApplicationResponseDtoMapper testApplicationResponseDtoMapper, TestApplicationRepository testApplicationRepository, TestApplicationResponseMapper testApplicationResponseMapper) {
         this.testRepository = testRepository;
         this.subjectRepository = subjectRepository;
         this.userRepository = userRepository;
@@ -43,6 +46,7 @@ public class TestServiceImpl implements TestService {
         this.testResponseDtoMapper = testResponseDtoMapper;
         this.testApplicationResponseDtoMapper = testApplicationResponseDtoMapper;
         this.testApplicationRepository = testApplicationRepository;
+        this.testApplicationResponseMapper = testApplicationResponseMapper;
     }
 
     @Override
@@ -80,7 +84,6 @@ public class TestServiceImpl implements TestService {
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(subject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
         if(!subject.get().getSubjectProfessor().equals(user.get()) && !user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not a teacher of this subject");
-        if(subject.get().getTests().isEmpty()) return ResponseEntity.badRequest().body("Subject has no tests");
 
         List<TestResponseDTO> tests = new ArrayList<>();
 
@@ -180,4 +183,41 @@ public class TestServiceImpl implements TestService {
             return ResponseEntity.ok().body("Test application graded");
         } else return ResponseEntity.badRequest().body("User is not a teacher of this subject");
     }
+
+    @Override
+    public ResponseEntity<Object> getAllTestesForSubject(String authorization, Long id) {
+        String username = tokenService.getUsernameFromToken(authorization);
+        Optional<User> user = userRepository.findByUsername(username);
+        Optional<Subject> subject = subjectRepository.findById(id);
+
+        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
+        if(subject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
+
+        Set<Test> testList = subject.get().getTests();
+
+        return ResponseEntity.ok(testResponseDtoMapper.map(testList));
+    }
+
+    @Override
+    public ResponseEntity<Object> getAllAppliedTestsForStudent(String authorization, Long id) {
+        String username = tokenService.getUsernameFromToken(authorization);
+        Optional<User> user = userRepository.findByUsername(username);
+        Optional<Subject> subject = subjectRepository.findById(id);
+
+        if (user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
+        if (subject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
+
+        List<TestApplication> testApplicationList = new ArrayList<>();
+
+        subject.get().getTests().forEach(test -> {
+            test.getTestApplication().forEach(testApplication -> {
+                if (testApplication.getStudent().equals(user.get())) {
+                    testApplicationList.add(testApplication);
+                }
+            });
+        });
+
+        return ResponseEntity.ok(testApplicationResponseMapper.map(testApplicationList));
+    }
+
 }

@@ -43,8 +43,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Allow all requests to /api/auth/**
-                        .requestMatchers("/api/subject/teacher/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_TEACHER") // Only admin and user allowed
-                        .requestMatchers("/api/test/teacher/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_TEACHER") // Only admin and user allowed
+                        .requestMatchers("/api/subject/teacher/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_TEACHER") // Only admin and teacher allowed
+                        .requestMatchers("/api/test/teacher/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_TEACHER") // Only admin and teacher allowed
                         .requestMatchers("/api/admin/**").hasAuthority("SCOPE_ADMIN") // Only admin allowed
                         .anyRequest().authenticated() // Require authentication for all other requests
                 )

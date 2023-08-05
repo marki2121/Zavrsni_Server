@@ -46,4 +46,14 @@ public class TestController {
     public ResponseEntity<Object> gradeTest(@RequestHeader String Authorization, @PathVariable Long applicationId, @PathVariable Integer grade){
         return testService.gradeTest(Authorization, applicationId, grade);
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Object> getAllTestesForSubject(@RequestHeader String Authorization, @PathVariable Long id){
+        return testService.getAllTestesForSubject(Authorization, id);
+    }
+
+    @GetMapping("{id}/applications")
+    public ResponseEntity<Object> getAllAppliedTestsForStudent(@RequestHeader String Authorization, @PathVariable Long id){
+        return testService.getAllAppliedTestsForStudent(Authorization, id);
+    }
 }
