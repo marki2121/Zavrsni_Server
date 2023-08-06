@@ -14,6 +14,7 @@ public class TestApplicationResponseMapper implements Function<TestApplication, 
     @Override
     public TestApplicationsResonseDTO apply(TestApplication testApplication) {
         return new TestApplicationsResonseDTO(
+                testApplication.getId(),
                 formatter.format(testApplication.getTest().getTestDate()),
                 testApplication.getTest().getTestNote(),
                 testApplication.getTestGrade(),

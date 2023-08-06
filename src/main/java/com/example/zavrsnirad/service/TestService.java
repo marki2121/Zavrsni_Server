@@ -14,7 +14,7 @@ public interface TestService {
 
     ResponseEntity<Object> updateTest(String authorization, Long id, Long testId, TestCreateDTO data) throws ParseException;
 
-    ResponseEntity<Object> getAllTestsApplications(String authorization, Long id, Long testId);
+    ResponseEntity<Object> getAllTestsApplications(String authorization, Long id);
 
     ResponseEntity<Object> gradeTest(String authorization, Long applicationId, Integer grade);
 

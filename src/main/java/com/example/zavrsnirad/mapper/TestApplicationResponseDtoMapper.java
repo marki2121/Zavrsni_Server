@@ -4,6 +4,7 @@ import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
 import com.example.zavrsnirad.entity.TestApplication;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Service
@@ -18,5 +19,9 @@ public class TestApplicationResponseDtoMapper implements Function<TestApplicatio
                 testApplication.getTestGrade(),
                 testApplication.getTestGraded()
         );
+    }
+
+    public List<TestApplicationResponseDTO> map(List<TestApplication> testApplications){
+        return testApplications.stream().map(this::apply).toList();
     }
 }

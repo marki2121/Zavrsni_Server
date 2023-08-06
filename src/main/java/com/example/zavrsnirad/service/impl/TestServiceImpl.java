@@ -2,7 +2,6 @@ package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.request.TestCreateDTO;
-import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
 import com.example.zavrsnirad.dto.response.TestResponseDTO;
 import com.example.zavrsnirad.entity.Subject;
 import com.example.zavrsnirad.entity.Test;
@@ -141,28 +140,18 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public ResponseEntity<Object> getAllTestsApplications(String authorization, Long id, Long testId) {
+    public ResponseEntity<Object> getAllTestsApplications(String authorization, Long testId) {
         String username = tokenService.getUsernameFromToken(authorization);
         Optional<User> user = userRepository.findByUsername(username);
-        Optional<Subject> subject = subjectRepository.findById(id);
 
         if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
         if(user.get().getRole().equals(Role.STUDENT)) return ResponseEntity.badRequest().body("User is not a teacher");
-        if(subject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
-        if(!subject.get().getSubjectProfessor().equals(user.get()) && !user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not a teacher of this subject");
-        if(subject.get().getTests().isEmpty()) return ResponseEntity.badRequest().body("Subject has no tests");
 
-        for(Test test : subject.get().getTests()) {
-            if(test.getId().equals(testId)) {
-                List<TestApplicationResponseDTO> applications = new ArrayList<>();
-                for(TestApplication application : test.getTestApplication()) {
-                    applications.add(testApplicationResponseDtoMapper.apply(application));
-                }
-                return ResponseEntity.ok().body(applications);
-            }
-        }
+        Optional<List<TestApplication>> test = testApplicationRepository.findByTestId(testId);
 
-        return ResponseEntity.badRequest().body("Test not found");
+        if(test.isEmpty()) return ResponseEntity.badRequest().body("Test not found");
+
+        return ResponseEntity.ok().body(testApplicationResponseDtoMapper.map(test.get()));
     }
 
     @Override

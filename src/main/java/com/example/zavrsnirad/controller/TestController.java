@@ -37,9 +37,9 @@ public class TestController {
         return testService.updateTest(Authorization, id, testId, data);
     }
 
-    @GetMapping("teacher/{id}/{testId}/all")
-    public ResponseEntity<Object> getAllTestsApplications(@RequestHeader String Authorization, @PathVariable Long id, @PathVariable Long testId){
-        return testService.getAllTestsApplications(Authorization, id, testId);
+    @GetMapping("teacher/{id}/applicants")
+    public ResponseEntity<Object> getAllTestsApplications(@RequestHeader String Authorization, @PathVariable Long id){
+        return testService.getAllTestsApplications(Authorization, id);
     }
 
     @PostMapping("teacher/{applicationId}/grade/{grade}")
