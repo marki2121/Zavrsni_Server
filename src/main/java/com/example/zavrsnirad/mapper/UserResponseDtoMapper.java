@@ -22,7 +22,8 @@ public class UserResponseDtoMapper implements Function<User, UserResponseDTO> {
                 user.getUserProfile().getZipCode(),
                 user.getUserProfile().getCountry(),
                 user.getUserProfile().getAboutMe(),
-                user.getRole().name()
+                user.getRole().name(),
+                user.getEnabled().toString()
         );
     }
 }

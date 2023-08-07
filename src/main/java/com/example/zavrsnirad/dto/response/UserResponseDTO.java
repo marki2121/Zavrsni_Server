@@ -12,6 +12,7 @@ public record UserResponseDTO(
         String zipCode,
         String country,
         String aboutMe,
-        String role
+        String role,
+        String active
 ) {
 }
