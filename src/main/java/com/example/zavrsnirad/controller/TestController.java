@@ -30,11 +30,13 @@ public class TestController {
         return ResponseEntity.ok(testService.getTestsForSubject(Authorization, id));
     }
 
+    // -
     @DeleteMapping("teacher/{testId}")
     public ResponseEntity<String> deleteTest(@RequestHeader String Authorization, @PathVariable Long testId){
         return ResponseEntity.ok(testService.deleteTest(Authorization, testId));
     }
 
+    // -
     @PutMapping("teacher/{testId}/update")
     public ResponseEntity<String> updateTest(@RequestHeader String Authorization, @PathVariable Long testId, @RequestBody TestCreateDTO data) throws ParseException {
         return ResponseEntity.ok(testService.updateTest(Authorization, testId, data));

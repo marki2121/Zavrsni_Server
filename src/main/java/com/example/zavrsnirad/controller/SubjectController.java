@@ -35,11 +35,13 @@ public class SubjectController {
         return ResponseEntity.ok(subjectService.getSubjectTeacher(Authorization, id));
     }
 
+    // -
     @DeleteMapping("/teacher/{id}")
     public ResponseEntity<String> deleteSubject(@RequestHeader String Authorization, @PathVariable Long id){
         return ResponseEntity.ok(subjectService.deleteSubject(Authorization, id));
     }
 
+    // -
     @PutMapping("/teacher/{id}/update")
     public ResponseEntity<String> updateSubject(@RequestHeader String Authorization, @PathVariable Long id, @RequestBody SubjectCreateDTO data){
         return ResponseEntity.ok(subjectService.updateSubject(Authorization, id, data));

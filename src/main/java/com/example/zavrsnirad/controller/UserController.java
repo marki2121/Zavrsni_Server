@@ -4,7 +4,6 @@ import com.example.zavrsnirad.dto.request.UpdateProfileDTO;
 import com.example.zavrsnirad.dto.request.UserDTO;
 import com.example.zavrsnirad.service.UserGetService;
 import com.example.zavrsnirad.service.UserProfileService;
-import com.example.zavrsnirad.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +13,10 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api/user")
 public class UserController {
-
-    private final UserService userService;
     private final UserGetService userGetService;
     private final UserProfileService userProfileService;
 
-    public UserController(UserService userService, UserGetService userGetService, UserProfileService userProfileService) {
-        this.userService = userService;
+    public UserController(UserGetService userGetService, UserProfileService userProfileService) {
         this.userGetService = userGetService;
         this.userProfileService = userProfileService;
     }
