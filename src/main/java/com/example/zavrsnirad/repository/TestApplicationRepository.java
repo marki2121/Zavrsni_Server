@@ -1,5 +1,6 @@
 package com.example.zavrsnirad.repository;
 
+import com.example.zavrsnirad.entity.Subject;
 import com.example.zavrsnirad.entity.Test;
 import com.example.zavrsnirad.entity.TestApplication;
 import com.example.zavrsnirad.entity.User;
@@ -19,4 +20,6 @@ public interface TestApplicationRepository extends JpaRepository<TestApplication
     @Query(name = "SELECT * FROM test_application WHERE test_id = ?1",
             nativeQuery = true)
     Optional<List<TestApplication>> findByTestId(Long testId);
+
+    List<TestApplication> findAllByStudentAndTest_Subject(User student, Subject test_subject);
 }

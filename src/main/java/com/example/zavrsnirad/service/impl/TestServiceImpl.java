@@ -1,212 +1,126 @@
 package com.example.zavrsnirad.service.impl;
 
-import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.request.TestCreateDTO;
+import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
 import com.example.zavrsnirad.dto.response.TestResponseDTO;
+import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.entity.Subject;
 import com.example.zavrsnirad.entity.Test;
 import com.example.zavrsnirad.entity.TestApplication;
-import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.TestApplicationResponseDtoMapper;
-import com.example.zavrsnirad.mapper.TestApplicationResponseMapper;
 import com.example.zavrsnirad.mapper.TestResponseDtoMapper;
-import com.example.zavrsnirad.repository.SubjectRepository;
-import com.example.zavrsnirad.repository.TestApplicationRepository;
 import com.example.zavrsnirad.repository.TestRepository;
-import com.example.zavrsnirad.repository.UserRepository;
+import com.example.zavrsnirad.service.SubjectService;
+import com.example.zavrsnirad.service.TestApplicationService;
 import com.example.zavrsnirad.service.TestService;
-import com.example.zavrsnirad.service.TokenService;
-import org.springframework.http.ResponseEntity;
+import com.example.zavrsnirad.service.UserGetService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.Objects;
 
 @Service
 public class TestServiceImpl implements TestService {
-    final private TestRepository testRepository;
-    final private SubjectRepository subjectRepository;
-    final private UserRepository userRepository;
-    final private TokenService tokenService;
-    final private TestResponseDtoMapper testResponseDtoMapper;
-    final private TestApplicationResponseDtoMapper testApplicationResponseDtoMapper;
-    final private TestApplicationRepository testApplicationRepository;
-    final private TestApplicationResponseMapper testApplicationResponseMapper;
+    private final TestRepository testRepository;
+    private final TestApplicationService testApplicationService;
+    private final UserGetService userGetService;
+    private final SubjectService subjectService;
+    private final TestResponseDtoMapper testResponseDtoMapper;
+    private final TestApplicationResponseDtoMapper testApplicationResponseDtoMapper;
 
-    public TestServiceImpl(TestRepository testRepository, SubjectRepository subjectRepository, UserRepository userRepository, TokenService tokenService, TestResponseDtoMapper testResponseDtoMapper, TestApplicationResponseDtoMapper testApplicationResponseDtoMapper, TestApplicationRepository testApplicationRepository, TestApplicationResponseMapper testApplicationResponseMapper) {
+    public TestServiceImpl(TestRepository testRepository, TestApplicationService testApplicationService, UserGetService userGetService, SubjectService subjectService, TestResponseDtoMapper testResponseDtoMapper, TestApplicationResponseDtoMapper testApplicationResponseDtoMapper) {
         this.testRepository = testRepository;
-        this.subjectRepository = subjectRepository;
-        this.userRepository = userRepository;
-        this.tokenService = tokenService;
+        this.testApplicationService = testApplicationService;
+        this.userGetService = userGetService;
+        this.subjectService = subjectService;
         this.testResponseDtoMapper = testResponseDtoMapper;
         this.testApplicationResponseDtoMapper = testApplicationResponseDtoMapper;
-        this.testApplicationRepository = testApplicationRepository;
-        this.testApplicationResponseMapper = testApplicationResponseMapper;
     }
 
     @Override
-    public ResponseEntity<Object> createTest(String authorization, Long id, TestCreateDTO data) throws ParseException {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-        Optional<Subject> subject = subjectRepository.findById(id);
+    public String createTest(String authorization, Long id, TestCreateDTO data) throws ParseException {
+        Subject subject = subjectService.getTeacherSubjectById(authorization, id);
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 
-        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-        if(user.get().getRole().equals(Role.STUDENT)) return ResponseEntity.badRequest().body("User is not a teacher");
-        if(subject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
-        if(!subject.get().getSubjectProfessor().equals(user.get()) && !user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not a teacher of this subject");
-
-        if(subject.get().getTests().size() >= 4) return ResponseEntity.badRequest().body("Subject already has 4 tests");
-        if(data.date() == null) return ResponseEntity.badRequest().body("Date is not valid");
+        if(subject.getTests().size() >= 4) throw new CostumeErrorException("Subject has 4 tests already", HttpStatus.BAD_REQUEST);
+        if(data.date() == null) throw new CostumeErrorException("Date is required", HttpStatus.BAD_REQUEST);
 
         Test test = new Test();
-        test.setSubject(subject.get());
+        test.setSubject(subject);
         test.setTestDate(formater.parse(data.date()));
-        if(data.note() != null) test.setTestNote(data.note());
-        else test.setTestNote("");
+        test.setTestNote(data.note());
 
         testRepository.save(test);
 
-        return ResponseEntity.ok().body("Test created");
+        return "Test created";
     }
 
     @Override
-    public ResponseEntity<Object> getTestsForSubject(String authorization, Long id) {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-        Optional<Subject> subject = subjectRepository.findById(id);
-
-        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-        if(subject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
-        if(!subject.get().getSubjectProfessor().equals(user.get()) && !user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not a teacher of this subject");
-
-        List<TestResponseDTO> tests = new ArrayList<>();
-
-        for(Test test : subject.get().getTests()) {
-            tests.add(testResponseDtoMapper.apply(test));
-        }
-
-        return ResponseEntity.ok().body(tests);
+    public List<TestResponseDTO> getTestsForSubject(String authorization, Long id) {
+        return testResponseDtoMapper.map(subjectService.getTeacherSubjectById(authorization, id).getTests());
     }
 
     @Override
-    public ResponseEntity<Object> deleteTest(String authorization, Long id, Long testId) {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-        Optional<Subject> subject = subjectRepository.findById(id);
+    public String deleteTest(String authorization, Long testId) {
+        Test test = getTestById(authorization, testId);
 
-        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-        if(user.get().getRole().equals(Role.STUDENT)) return ResponseEntity.badRequest().body("User is not a teacher");
-        if(subject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
-        if(!subject.get().getSubjectProfessor().equals(user.get()) && !user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not a teacher of this subject");
-        if(subject.get().getTests().isEmpty()) return ResponseEntity.badRequest().body("Subject has no tests");
+        testRepository.delete(test);
 
-        for(Test test : subject.get().getTests()) {
-            if(test.getId().equals(testId)) {
-                testRepository.delete(test);
-                return ResponseEntity.ok().body("Test deleted");
-            }
-        }
-
-        return ResponseEntity.badRequest().body("Test not found");
+        return "Test deleted";
     }
 
     @Override
-    public ResponseEntity<Object> updateTest(String authorization, Long id, Long testId, TestCreateDTO data) throws ParseException {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-        Optional<Subject> subject = subjectRepository.findById(id);
+    public String updateTest(String authorization, Long testId, TestCreateDTO data) throws ParseException {
+        Test test = getTestById(authorization, testId);
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 
-        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-        if(user.get().getRole().equals(Role.STUDENT)) return ResponseEntity.badRequest().body("User is not a teacher");
-        if(subject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
-        if(!subject.get().getSubjectProfessor().equals(user.get()) && !user.get().getRole().equals(Role.ADMIN)) return ResponseEntity.badRequest().body("User is not a teacher of this subject");
-        if(subject.get().getTests().isEmpty()) return ResponseEntity.badRequest().body("Subject has no tests");
+        if(data.date() != null) test.setTestDate(formater.parse(data.date()));
+        if(data.note() != null) test.setTestNote(data.note());
+        testRepository.save(test);
 
-        for(Test test : subject.get().getTests()) {
-            if(test.getId().equals(testId)) {
-                if(data.date() != null) test.setTestDate(formater.parse(data.date()));
-                if(data.note() != null) test.setTestNote(data.note());
-                testRepository.save(test);
-                return ResponseEntity.ok().body("Test updated");
-            }
-        }
-        return ResponseEntity.badRequest().body("Test not found");
+        return "Test updated";
+
     }
 
     @Override
-    public ResponseEntity<Object> getAllTestsApplications(String authorization, Long testId) {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-
-        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-        if(user.get().getRole().equals(Role.STUDENT)) return ResponseEntity.badRequest().body("User is not a teacher");
-
-        Optional<List<TestApplication>> test = testApplicationRepository.findByTestId(testId);
-
-        if(test.isEmpty()) return ResponseEntity.badRequest().body("Test not found");
-
-        return ResponseEntity.ok().body(testApplicationResponseDtoMapper.map(test.get()));
+    public List<TestApplicationResponseDTO> getAllTestsApplications(String authorization, Long testId) {
+        return testApplicationResponseDtoMapper.map(getTestById(authorization, testId).getTestApplication());
     }
 
     @Override
-    public ResponseEntity<Object> gradeTest(String authorization, Long applicationId, Integer grade) {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-        Optional<TestApplication> testApplication = testApplicationRepository.findById(applicationId);
+    public String gradeTest(String authorization, Long applicationId, Integer grade) {
+        TestApplication testApplication = testApplicationService.getTestApplicationById(authorization, applicationId);
 
-        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-        if(user.get().getRole().equals(Role.STUDENT)) return ResponseEntity.badRequest().body("User is not a teacher");
-        if(testApplication.isEmpty()) return ResponseEntity.badRequest().body("Test application not found");
-        if(testApplication.get().getTest().getSubject().getSubjectProfessor().equals(user.get()) || user.get().getRole().equals(Role.ADMIN)) {
-            testApplication.get().setTestGrade(grade);
-            testApplication.get().setTestGraded(true);
+        testApplication.setTestGrade(grade);
+        testApplication.setTestGraded(true);
 
-            testApplicationRepository.save(testApplication.get());
-
-            return ResponseEntity.ok().body("Test application graded");
-        } else return ResponseEntity.badRequest().body("User is not a teacher of this subject");
+        return testApplicationService.saveTestApplication(testApplication);
     }
 
     @Override
-    public ResponseEntity<Object> getAllTestesForSubject(String authorization, Long id) {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-        Optional<Subject> subject = subjectRepository.findById(id);
-
-        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-        if(subject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
-
-        Set<Test> testList = subject.get().getTests();
-
-        return ResponseEntity.ok(testResponseDtoMapper.map(testList));
+    public List<TestResponseDTO> getAllTestesForSubject(String authorization, Long id) {
+        return testResponseDtoMapper.map(
+                userGetService.getUserFromToken(authorization)
+                        .getSubjects().stream()
+                        .filter((s) -> s.getId().equals(id))
+                        .findFirst()
+                        .orElseThrow(() -> new CostumeErrorException("Subject not found", HttpStatus.BAD_REQUEST))
+                        .getTests());
     }
 
     @Override
-    public ResponseEntity<Object> getAllAppliedTestsForStudent(String authorization, Long id) {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-        Optional<Subject> subject = subjectRepository.findById(id);
-
-        if (user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-        if (subject.isEmpty()) return ResponseEntity.badRequest().body("Subject not found");
-
-        List<TestApplication> testApplicationList = new ArrayList<>();
-
-        subject.get().getTests().forEach(test -> {
-            test.getTestApplication().forEach(testApplication -> {
-                if (testApplication.getStudent().equals(user.get())) {
-                    testApplicationList.add(testApplication);
-                }
-            });
-        });
-
-        return ResponseEntity.ok(testApplicationResponseMapper.map(testApplicationList));
+    public List<TestApplicationResponseDTO> getAllAppliedTestsForStudent(String authorization, Long id) {
+        return testApplicationResponseDtoMapper.map(testApplicationService.getAllTestApplicationsForUserAndSubject(userGetService.getUserFromToken(authorization), subjectService.getTeacherSubjectById(authorization, id)));
     }
 
+    public Test getTestById(String auth, Long id) {
+        Test test = testRepository.findById(id).orElseThrow(() -> new CostumeErrorException("Test not found", HttpStatus.BAD_REQUEST));
+
+        if(!Objects.equals(test.getSubject().getSubjectProfessor().getId(), userGetService.getUserFromToken(auth).getId())) throw new CostumeErrorException("User is not a teacher of the subject the test is for", HttpStatus.BAD_REQUEST);
+
+        return test;
+    }
 }

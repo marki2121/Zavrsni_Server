@@ -29,7 +29,7 @@ public class AuthController {
     // Endpoint za registraciju novog korisnika
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@Validated @RequestBody SignupDTO data) {
-        return userService.signup(data);
+        return ResponseEntity.ok(userService.signup(data));
     }
 
 }

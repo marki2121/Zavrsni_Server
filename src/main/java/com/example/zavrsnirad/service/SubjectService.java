@@ -1,26 +1,32 @@
 package com.example.zavrsnirad.service;
 
 import com.example.zavrsnirad.dto.request.SubjectCreateDTO;
-import org.springframework.http.ResponseEntity;
+import com.example.zavrsnirad.dto.request.SubjectDTO;
+import com.example.zavrsnirad.dto.request.UserDTO;
+import com.example.zavrsnirad.entity.Subject;
+
+import java.util.List;
 
 public interface SubjectService {
-    ResponseEntity<Object> createSubject(String authorization, SubjectCreateDTO data);
+    String createSubject(String authorization, SubjectCreateDTO data);
 
-    ResponseEntity<Object> getSubject(String authorization, Long id);
+    SubjectDTO getSubject(String authorization, Long id);
 
-    ResponseEntity<Object> getSubjects(String authorization);
+    List<SubjectDTO> getSubjects(String authorization);
 
-    ResponseEntity<Object> getSubjectTeacher(String authorization, Long id);
+    SubjectDTO getSubjectTeacher(String authorization, Long id);
 
-    ResponseEntity<Object> deleteSubject(String authorization, Long id);
+    String deleteSubject(String authorization, Long id);
 
-    ResponseEntity<Object> updateSubject(String authorization, Long id, SubjectCreateDTO data);
+    String updateSubject(String authorization, Long id, SubjectCreateDTO data);
 
-    ResponseEntity<Object> getSubjectsStudent(String authorization);
+    List<SubjectDTO> getSubjectsStudent(String authorization);
 
-    ResponseEntity<Object> addStudentToSubject(String authorization, Long id, Long studentId);
+    String addStudentToSubject(String authorization, Long id, Long studentId);
 
-    ResponseEntity<Object> removeStudentFromSubject(String authorization, Long id, Long studentId);
+    String removeStudentFromSubject(String authorization, Long id, Long studentId);
 
-    ResponseEntity<Object> getStudentsFromSubject(String authorization, Long id);
+    List<UserDTO> getStudentsFromSubject(String authorization, Long id);
+
+    Subject getTeacherSubjectById(String auth,Long id);
 }

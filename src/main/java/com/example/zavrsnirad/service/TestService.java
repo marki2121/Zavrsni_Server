@@ -1,24 +1,26 @@
 package com.example.zavrsnirad.service;
 
 import com.example.zavrsnirad.dto.request.TestCreateDTO;
-import org.springframework.http.ResponseEntity;
+import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
+import com.example.zavrsnirad.dto.response.TestResponseDTO;
 
 import java.text.ParseException;
+import java.util.List;
 
 public interface TestService {
-    ResponseEntity<Object> createTest(String authorization, Long id, TestCreateDTO data) throws ParseException;
+    String createTest(String authorization, Long id, TestCreateDTO data) throws ParseException;
 
-    ResponseEntity<Object> getTestsForSubject(String authorization, Long id);
+    List<TestResponseDTO> getTestsForSubject(String authorization, Long id);
 
-    ResponseEntity<Object> deleteTest(String authorization, Long id, Long testId);
+    String deleteTest(String authorization, Long testId);
 
-    ResponseEntity<Object> updateTest(String authorization, Long id, Long testId, TestCreateDTO data) throws ParseException;
+    String updateTest(String authorization, Long testId, TestCreateDTO data) throws ParseException;
 
-    ResponseEntity<Object> getAllTestsApplications(String authorization, Long id);
+    List<TestApplicationResponseDTO> getAllTestsApplications(String authorization, Long id);
 
-    ResponseEntity<Object> gradeTest(String authorization, Long applicationId, Integer grade);
+    String gradeTest(String authorization, Long applicationId, Integer grade);
 
-    ResponseEntity<Object> getAllTestesForSubject(String authorization, Long id);
+    List<TestResponseDTO> getAllTestesForSubject(String authorization, Long id);
 
-    ResponseEntity<Object> getAllAppliedTestsForStudent(String authorization, Long id);
+    List<TestApplicationResponseDTO> getAllAppliedTestsForStudent(String authorization, Long id);
 }

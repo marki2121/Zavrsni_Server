@@ -6,45 +6,34 @@ import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.entity.UserProfile;
 import com.example.zavrsnirad.mapper.UserDtoMapper;
 import com.example.zavrsnirad.repository.UserProfileRepository;
-import com.example.zavrsnirad.repository.UserRepository;
-import com.example.zavrsnirad.service.TokenService;
+import com.example.zavrsnirad.service.UserGetService;
 import com.example.zavrsnirad.service.UserProfileService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 // Ova klasa predstavlja servis korisnickog profila koji se koristi za pozivanje metoda iz repozitorija te za logiku aplikacije
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
     // Injektiranje repozitorija
     private final UserProfileRepository userProfileRepository;
-    private final UserRepository userRepository;
-    private final TokenService tokenService;
+    private final UserGetService userService;
     private final UserDtoMapper userDtoMapper;
 
-    public UserProfileServiceImpl(UserProfileRepository userProfileRepository, UserRepository userRepository, TokenService tokenService, UserDtoMapper userDtoMapper) {
+    public UserProfileServiceImpl(UserProfileRepository userProfileRepository, UserGetService userService, UserDtoMapper userDtoMapper) {
         this.userProfileRepository = userProfileRepository;
-        this.userRepository = userRepository;
-        this.tokenService = tokenService;
+        this.userService = userService;
         this.userDtoMapper = userDtoMapper;
     }
 
     @Override
-    public ResponseEntity<UserDTO> getSelf(String authorization) {
-        String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found")); // dohvaćanje korisnika iz baze podataka prema username-u
-
-        return ResponseEntity.ok(userDtoMapper.apply(user));
+    public UserDTO getSelf(String authorization) {
+        return userDtoMapper.apply(userService.getUserFromToken(authorization));
     }
 
     @Override
-    public ResponseEntity<String> updateSelfProfile(String authorization, UpdateProfileDTO data) {
-        String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found")); // dohvaćanje korisnika iz baze podataka prema username-u
+    public String updateSelfProfile(String authorization, UpdateProfileDTO data) {
+        User user = userService.getUserFromToken(authorization);
         UserProfile userProfile = user.getUserProfile(); // dohvaćanje korisnickog profila
+
         boolean updated = false;
 
         if(data.firstName() != null && !data.firstName().isEmpty() && !data.firstName().isBlank() && !data.firstName().equals(userProfile.getFirstName())) {
@@ -85,17 +74,18 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
 
         if(!updated) {
-            return new ResponseEntity<>("No changes", HttpStatus.NOT_MODIFIED);
+            return "No changes";
         }
 
         userProfileRepository.save(userProfile);
 
-        return new ResponseEntity<>("Updated profile", HttpStatus.ACCEPTED);
+        return "Updated profile";
     }
 
     @Override
-    public ResponseEntity<?> getUsersByUsername(String username) {
-        List<User> users = userRepository.findAllByUsernameContaining(username);
-        return ResponseEntity.ok(userDtoMapper.map(users));
+    public UserProfile saveProfile(UserProfile profile) {
+        return userProfileRepository.save(profile);
     }
+
+
 }

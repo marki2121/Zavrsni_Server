@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "subject")
@@ -38,8 +38,8 @@ public class Subject {
             joinColumns = @JoinColumn(name = "subject_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> students;
+    private List<User> students;
     @OneToMany(mappedBy = "subject")
-    private Set<Test> tests;
+    private List<Test> tests;
 
 }

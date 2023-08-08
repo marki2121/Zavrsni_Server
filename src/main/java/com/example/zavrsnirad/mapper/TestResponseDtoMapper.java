@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 @Service
@@ -21,7 +20,7 @@ public class TestResponseDtoMapper implements Function<Test, TestResponseDTO> {
                 test.getTestNote());
     }
 
-    public List<TestResponseDTO> map(Set<Test> tests){
+    public List<TestResponseDTO> map(List<Test> tests){
         return tests.stream().map(this::apply).toList();
     }
 }

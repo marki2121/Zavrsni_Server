@@ -1,11 +1,22 @@
 package com.example.zavrsnirad.service;
 
-import org.springframework.http.ResponseEntity;
+import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
+import com.example.zavrsnirad.entity.Subject;
+import com.example.zavrsnirad.entity.TestApplication;
+import com.example.zavrsnirad.entity.User;
+
+import java.util.List;
 
 public interface TestApplicationService {
-    ResponseEntity<Object> applyForTest(String authorization, Long testId);
+    String applyForTest(String authorization, Long testId);
 
-    ResponseEntity<Object> getAllApplications(String authorization);
+    List<TestApplicationResponseDTO> getAllApplications(String authorization);
 
-    ResponseEntity<Object> deleteApplication(String authorization, Long applicationId);
+    String deleteApplication(String authorization, Long applicationId);
+
+    TestApplication getTestApplicationById(String authorization, Long id);
+
+    String saveTestApplication(TestApplication testApplication);
+
+    List<TestApplication> getAllTestApplicationsForUserAndSubject(User user, Subject subject);
 }

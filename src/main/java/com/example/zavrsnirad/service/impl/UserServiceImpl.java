@@ -2,40 +2,40 @@ package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.request.SignupDTO;
-import com.example.zavrsnirad.dto.request.UpdatePasswordDTO;
+import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.entity.UserProfile;
+import com.example.zavrsnirad.mapper.SignupDtoMapper;
 import com.example.zavrsnirad.mapper.UserDtoMapper;
-import com.example.zavrsnirad.repository.UserProfileRepository;
 import com.example.zavrsnirad.repository.UserRepository;
 import com.example.zavrsnirad.service.TokenService;
+import com.example.zavrsnirad.service.UserGetService;
+import com.example.zavrsnirad.service.UserProfileService;
 import com.example.zavrsnirad.service.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 // Ova klasa predstavlja servis korisnika koji se koristi za pozivanje metoda iz repozitorija te za logiku aplikacije
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
     // Injektiranje repozitorija
     private final UserRepository userRepository;
-    private final UserProfileRepository userProfileRepository;
+    private final UserGetService userGetService;
+    private final UserProfileService userProfileService;
     private final TokenService tokenService;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final SignupDtoMapper signupDtoMapper;
     private final UserDtoMapper userDtoMapper;
 
-    public UserServiceImpl(UserRepository userRepository, UserProfileRepository userProfileRepository, TokenService tokenService, BCryptPasswordEncoder passwordEncoder, UserDtoMapper userDtoMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserGetService userGetService, SignupDtoMapper signupDtoMapper, UserProfileService userProfileService, TokenService tokenService, UserDtoMapper userDtoMapper) {
         this.userRepository = userRepository;
-        this.userProfileRepository = userProfileRepository;
+        this.userGetService = userGetService;
+        this.signupDtoMapper = signupDtoMapper;
+        this.userProfileService = userProfileService;
         this.tokenService = tokenService;
-        this.passwordEncoder = passwordEncoder;
         this.userDtoMapper = userDtoMapper;
     }
 
@@ -54,49 +54,107 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     // Testirano
     @Override
-    public ResponseEntity<String> signup(SignupDTO data) {
+    public String signup(SignupDTO data) {
         if(data.password().equals(data.passwordConfirmation())) { // provjera da li se lozinke podudaraju
             if(userRepository.findByUsername(data.username()).isEmpty()) { // provjera da li korisnik već postoji
-                User user = new User();
+                User user = signupDtoMapper.apply(data); // mapiranje podataka iz DTO-a u entitet (User)
                 UserProfile userProfile = new UserProfile();
-
-                // TODO: promini na mappera
-                user.setUsername(data.username());
-                user.setPassword(passwordEncoder.encode(data.password()));
-                user.setRole(Role.STUDENT);
-                user.setEnabled(true);
 
                 userRepository.save(user);
 
                 userProfile.setUser(user);
 
-                userProfileRepository.save(userProfile);
+                userProfileService.saveProfile(userProfile); // spremanje korisničkog profila (UserProfile
 
-                return new ResponseEntity("User created", HttpStatus.CREATED);
+                return "User created";
             }
-            return ResponseEntity.badRequest().body("Username already exists");
+            throw new CostumeErrorException("Username already exists", HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.badRequest().body("Passwords don't match");
+
+        throw new CostumeErrorException("Password's don't match", HttpStatus.BAD_REQUEST);
     }
 
-    // Testirano
     @Override
-    public ResponseEntity<String> updatePassword(String authorization, UpdatePasswordDTO data) {
-        String username = tokenService.getUsernameFromToken(authorization); // dohvaćanje username-a iz tokena
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found")); // dohvaćanje korisnika iz baze podataka prema username-u
+    public String deleteUserById(Long id) {
+        User user = userGetService.getUserById(id);;
 
-        if(passwordEncoder.matches(data.oldPassword(), user.getPassword())) {
-            if(!passwordEncoder.matches(data.newPassword(), user.getPassword())) {
-                if (Objects.equals(data.confirmationPassword(), data.newPassword())) {
-                    user.setPassword(passwordEncoder.encode(data.newPassword()));
+        userRepository.delete(user);
 
-                    userRepository.save(user);
-
-                    return ResponseEntity.ok("Password updated.");
-                }
-            }
-        }
-        return new ResponseEntity<>( "Passwords don't match or bad password", HttpStatus.I_AM_A_TEAPOT);
+        return "User deleted";
     }
+
+    @Override
+    public String disableUserById(Long id) {
+        User user = userGetService.getUserById(id);;
+
+        user.setEnabled(false);
+
+        userRepository.save(user);
+
+        return "User disabled";
+    }
+
+    @Override
+    public String enableUserById(Long id) {
+        User user = userGetService.getUserById(id);;
+
+        user.setEnabled(true);
+
+        userRepository.save(user);
+
+        return "User enabled";
+    }
+
+    @Override
+    public String promoteUserById(Long id) {
+        User user = userGetService.getUserById(id);;
+
+        if(user.getRole().equals(Role.ADMIN)) {
+            throw new CostumeErrorException("User is already admin", HttpStatus.BAD_REQUEST);
+        }
+
+        if(user.getRole().equals(Role.TEACHER)) {
+            user.setRole(Role.ADMIN);
+            userRepository.save(user);
+        }
+
+        if(user.getRole().equals(Role.TEACHER)) {
+            user.setRole(Role.TEACHER);
+            userRepository.save(user);
+        }
+
+        return "User promoted";
+    }
+
+    @Override
+    public String demoteUserById(Long id) {
+        User user = userGetService.getUserById(id);
+
+        if(checkIfUserIsOnlyAdmin()) {
+            throw new CostumeErrorException("User is only admin", HttpStatus.BAD_REQUEST);
+        }
+
+        if(user.getRole().equals(Role.STUDENT)) {
+            throw new CostumeErrorException("User is already student", HttpStatus.BAD_REQUEST);
+        }
+
+        if(user.getRole().equals(Role.TEACHER)) {
+            user.setRole(Role.STUDENT);
+            userRepository.save(user);
+        }
+
+        if(user.getRole().equals(Role.ADMIN)) {
+            user.setRole(Role.TEACHER);
+            userRepository.save(user);
+        }
+
+        return "User demoted";
+    }
+
+    public boolean checkIfUserIsOnlyAdmin() {
+        return userRepository.findAllByRole(Role.ADMIN).size() == 1;
+    }
+
+
 }
 

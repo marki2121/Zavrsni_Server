@@ -4,6 +4,7 @@ import com.example.zavrsnirad.dto.response.UserResponseDTO;
 import com.example.zavrsnirad.entity.User;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Service
@@ -25,5 +26,9 @@ public class UserResponseDtoMapper implements Function<User, UserResponseDTO> {
                 user.getRole().name(),
                 user.getEnabled().toString()
         );
+    }
+
+    public List<UserResponseDTO> map(List<User> users){
+        return users.stream().map(this::apply).toList();
     }
 }

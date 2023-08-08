@@ -1,8 +1,11 @@
 package com.example.zavrsnirad.controller;
 
+import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
 import com.example.zavrsnirad.service.TestApplicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -15,17 +18,17 @@ public class TestApplicationController {
     }
 
     @PostMapping("{testId}")
-    public ResponseEntity<Object> applyForTest(@RequestHeader String Authorization, @PathVariable Long testId){
-        return testApplicationService.applyForTest(Authorization, testId);
+    public ResponseEntity<String> applyForTest(@RequestHeader String Authorization, @PathVariable Long testId){
+        return ResponseEntity.ok(testApplicationService.applyForTest(Authorization, testId));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Object> getAllApplications(@RequestHeader String Authorization){
-        return testApplicationService.getAllApplications(Authorization);
+    public ResponseEntity<List<TestApplicationResponseDTO>> getAllApplications(@RequestHeader String Authorization){
+        return ResponseEntity.ok(testApplicationService.getAllApplications(Authorization));
     }
 
     @DeleteMapping("{applicationId}")
-    public ResponseEntity<Object> deleteApplication(@RequestHeader String Authorization, @PathVariable Long applicationId){
-        return testApplicationService.deleteApplication(Authorization, applicationId);
+    public ResponseEntity<String> deleteApplication(@RequestHeader String Authorization, @PathVariable Long applicationId){
+        return ResponseEntity.ok(testApplicationService.deleteApplication(Authorization, applicationId));
     }
 }

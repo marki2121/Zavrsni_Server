@@ -4,6 +4,7 @@ import com.example.zavrsnirad.dto.request.SubjectDTO;
 import com.example.zavrsnirad.entity.Subject;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Service
@@ -18,5 +19,9 @@ public class SubjectDtoMapper implements Function<Subject, SubjectDTO> {
                 subject.getSubjectSemester(),
                 subject.getSubjectYear()
         );
+    }
+
+    public List<SubjectDTO> map(List<Subject> subjects) {
+        return subjects.stream().map(this::apply).toList();
     }
 }

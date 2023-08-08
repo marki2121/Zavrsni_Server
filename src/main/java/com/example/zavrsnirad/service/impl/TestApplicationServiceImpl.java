@@ -1,96 +1,83 @@
 package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
-import com.example.zavrsnirad.entity.Test;
-import com.example.zavrsnirad.entity.TestApplication;
-import com.example.zavrsnirad.entity.User;
+import com.example.zavrsnirad.entity.*;
 import com.example.zavrsnirad.mapper.TestApplicationResponseDtoMapper;
 import com.example.zavrsnirad.repository.TestApplicationRepository;
-import com.example.zavrsnirad.repository.TestRepository;
-import com.example.zavrsnirad.repository.UserRepository;
 import com.example.zavrsnirad.service.TestApplicationService;
-import com.example.zavrsnirad.service.TokenService;
-import org.springframework.http.ResponseEntity;
+import com.example.zavrsnirad.service.TestGetService;
+import com.example.zavrsnirad.service.UserGetService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TestApplicationServiceImpl implements TestApplicationService {
     private final TestApplicationRepository testApplicationRepository;
-    private final TokenService tokenService;
-    private final UserRepository userRepository;
-    private final TestRepository testRepository;
+    private final TestGetService testService;
+    private final UserGetService userGetService;
     private final TestApplicationResponseDtoMapper testApplicationResponseDtoMapper;
 
-    public TestApplicationServiceImpl(TestApplicationRepository testApplicationRepository, TokenService tokenService, UserRepository userRepository, TestRepository testRepository, TestApplicationResponseDtoMapper testApplicationResponseDtoMapper) {
+    public TestApplicationServiceImpl(TestApplicationRepository testApplicationRepository, TestGetService testService, UserGetService userGetService, TestApplicationResponseDtoMapper testApplicationResponseDtoMapper) {
         this.testApplicationRepository = testApplicationRepository;
-        this.tokenService = tokenService;
-        this.userRepository = userRepository;
-        this.testRepository = testRepository;
+        this.testService = testService;
+        this.userGetService = userGetService;
         this.testApplicationResponseDtoMapper = testApplicationResponseDtoMapper;
     }
 
     @Override
-    public ResponseEntity<Object> applyForTest(String authorization, Long testId) {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-        Optional<Test> test = testRepository.findById(testId);
+    public String applyForTest(String authorization, Long testId) {
+        User user = userGetService.getUserFromToken(authorization);
+        Test test = testService.getTestForUser(authorization, testId);
 
-        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-        if(test.isEmpty()) return ResponseEntity.badRequest().body("Test not found");
-        if(!test.get().getSubject().getStudents().contains(user.get())){
-            return ResponseEntity.badRequest().body("You are not enrolled in this subject");
-        }
-
-        Optional<TestApplication> testApplication = testApplicationRepository.findByStudentAndTest(user.get(), test.get());
-
-        if(testApplication.isPresent()) return ResponseEntity.badRequest().body("You have already applied for this test");
+        if(testApplicationRepository.findByStudentAndTest(user, test).isPresent()) throw new CostumeErrorException("User already applied for the test");
 
         TestApplication newTestApplication = new TestApplication();
-        newTestApplication.setStudent(user.get());
-        newTestApplication.setTest(test.get());
+        newTestApplication.setStudent(user);
+        newTestApplication.setTest(test);
         newTestApplication.setTestGraded(false);
 
         testApplicationRepository.save(newTestApplication);
 
-        return ResponseEntity.ok("Successfully applied for test");
+        return "Applied for test";
     }
 
     @Override
-    public ResponseEntity<Object> getAllApplications(String authorization) {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-
-        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-
-        List<TestApplication> testApplications = testApplicationRepository.findAllByStudent(user.get());
-
-        if(testApplications.isEmpty()) return ResponseEntity.badRequest().body("You have not applied for any tests");
-
-        List<TestApplicationResponseDTO> testApplicationsResponse = new ArrayList<>();
-
-        for(TestApplication testApplication : testApplications){
-            testApplicationsResponse.add(testApplicationResponseDtoMapper.apply(testApplication));
-        }
-
-        return ResponseEntity.ok(testApplicationsResponse);
+    public List<TestApplicationResponseDTO> getAllApplications(String authorization) {
+        return testApplicationResponseDtoMapper.map(testApplicationRepository.findAllByStudent(userGetService.getUserFromToken(authorization)));
     }
 
     @Override
-    public ResponseEntity<Object> deleteApplication(String authorization, Long applicationId) {
-        String username = tokenService.getUsernameFromToken(authorization);
-        Optional<User> user = userRepository.findByUsername(username);
-        Optional<TestApplication> testApplication = testApplicationRepository.findById(applicationId);
+    public String deleteApplication(String authorization, Long applicationId) {
+        User user = userGetService.getUserFromToken(authorization);
+        TestApplication testApplication = testApplicationRepository.findById(applicationId).orElseThrow(() -> new CostumeErrorException("Test application not found", HttpStatus.BAD_REQUEST));
 
-        if(user.isEmpty()) return ResponseEntity.badRequest().body("User not found");
-        if(testApplication.isEmpty()) return ResponseEntity.badRequest().body("Test application not found");
-        if(!testApplication.get().getStudent().equals(user.get())) return ResponseEntity.badRequest().body("You are not the owner of this test application");
+        if(!testApplication.getStudent().equals(user)) throw new CostumeErrorException("You are not the owner of this test application", HttpStatus.BAD_REQUEST);
 
-        testApplicationRepository.delete(testApplication.get());
+        testApplicationRepository.delete(testApplication);
 
-        return ResponseEntity.ok("Successfully deleted test application");
+        return "Successfully deleted test application";
+    }
+
+    @Override
+    public TestApplication getTestApplicationById(String authorization, Long id) {
+        User user = userGetService.getUserFromToken(authorization);
+        TestApplication testApplication = testApplicationRepository.findById(id).orElseThrow(() -> new CostumeErrorException("Test application not found", HttpStatus.BAD_REQUEST));
+
+        if(!testApplication.getStudent().equals(user)) throw new CostumeErrorException("You are not the owner of this test application", HttpStatus.BAD_REQUEST);
+
+        return testApplication;
+    }
+
+    @Override
+    public String saveTestApplication(TestApplication testApplication) {
+        testApplicationRepository.save(testApplication);
+        return "Test application saved";
+    }
+
+    @Override
+    public List<TestApplication> getAllTestApplicationsForUserAndSubject(User user, Subject subject) {
+        return testApplicationRepository.findAllByStudentAndTest_Subject(user, subject);
     }
 }

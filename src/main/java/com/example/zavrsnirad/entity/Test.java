@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "tests")
@@ -28,5 +28,5 @@ public class Test {
     @Column(name = "test_note")
     private String testNote;
     @OneToMany(mappedBy = "test")
-    private Set<TestApplication> testApplication;
+    private List<TestApplication> testApplication;
 }

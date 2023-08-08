@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 // Ova klasa predstavlja entitet korisnika u bazi podataka
 // Ova klasa implementira interfejs UserDetails koji je dio Spring Security-a
@@ -52,7 +52,14 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user")
     private UserProfile userProfile;
     @ManyToMany(mappedBy = "students")
-    private Set<Subject> subjects;
+    private List<Subject> subjects;
+
+    public User(String username, String password, Role role, boolean enabled) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.enabled = enabled;
+    }
 
 
     // Implementacija metoda iz interfejsa UserDetails
