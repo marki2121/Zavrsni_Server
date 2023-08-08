@@ -48,9 +48,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     // Testirano
     @Override
-    public ResponseEntity<String> login(Authentication authentication) {
-        String token = tokenService.generateToken(authentication); // generiranje tokena
-        return ResponseEntity.ok(token);
+    public String login(Authentication authentication) {
+        return tokenService.generateToken(authentication); // generiranje tokena
     }
 
     // Testirano

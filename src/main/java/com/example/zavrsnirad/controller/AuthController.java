@@ -22,7 +22,7 @@ public class AuthController {
     // Endpoint za prijavu postojećeg korisnika
     @GetMapping("/login")
     public ResponseEntity<String> login(Authentication authentication) {
-        return userService.login(authentication);
+        return ResponseEntity.ok(userService.login(authentication));
     }
 
 
