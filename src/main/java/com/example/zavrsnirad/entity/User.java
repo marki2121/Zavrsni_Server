@@ -2,6 +2,10 @@ package com.example.zavrsnirad.entity;
 
 import com.example.zavrsnirad.appenum.Role;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +18,10 @@ import java.util.Set;
 // Ova klasa implementira interfejs UserDetails koji je dio Spring Security-a
 @Entity
 @Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,75 +89,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
-    }
-
-    // Constructor
-    public User() {
-    }
-
-    public User(Long id, String username, String password, Role role, Boolean enabled, UserProfile userProfile, Set<Subject> subjects) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.role = role;
-        this.enabled = enabled;
-        this.userProfile = userProfile;
-        this.subjects = subjects;
-    }
-
-    public User(Long id, String username, String password, Role role, Boolean enabled, UserProfile userProfile) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.role = role;
-        this.enabled = enabled;
-        this.userProfile = userProfile;
-    }
-
-    // Getters and setters
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public UserProfile getUserProfile() {
-        return userProfile;
-    }
-
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
-    }
-
-    public Set<Subject> getSubjects() {
-        return subjects;
     }
 }
