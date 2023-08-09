@@ -41,7 +41,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public String createTest(String authorization, Long id, TestCreateDTO data) throws ParseException {
+    public String createTest(String authorization, Long id, TestCreateDTO data) throws ParseException, CostumeErrorException {
         Subject subject = subjectService.getTeacherSubjectById(authorization, id);
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -59,12 +59,12 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<TestResponseDTO> getTestsForSubject(String authorization, Long id) {
+    public List<TestResponseDTO> getTestsForSubject(String authorization, Long id) throws CostumeErrorException {
         return testResponseDtoMapper.map(subjectService.getTeacherSubjectById(authorization, id).getTests());
     }
 
     @Override
-    public String deleteTest(String authorization, Long testId) {
+    public String deleteTest(String authorization, Long testId) throws CostumeErrorException {
         Test test = getTestById(authorization, testId);
 
         testRepository.delete(test);
@@ -73,7 +73,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public String updateTest(String authorization, Long testId, TestCreateDTO data) throws ParseException {
+    public String updateTest(String authorization, Long testId, TestCreateDTO data) throws ParseException, CostumeErrorException {
         Test test = getTestById(authorization, testId);
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -86,12 +86,12 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<TestApplicationResponseDTO> getAllTestsApplications(String authorization, Long testId) {
+    public List<TestApplicationResponseDTO> getAllTestsApplications(String authorization, Long testId) throws CostumeErrorException {
         return testApplicationResponseDtoMapper.map(getTestById(authorization, testId).getTestApplication());
     }
 
     @Override
-    public String gradeTest(String authorization, Long applicationId, Integer grade) {
+    public String gradeTest(String authorization, Long applicationId, Integer grade) throws CostumeErrorException {
         TestApplication testApplication = testApplicationService.getTestApplicationById(authorization, applicationId);
 
         testApplication.setTestGrade(grade);
@@ -101,7 +101,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<TestResponseDTO> getAllTestesForSubject(String authorization, Long id) {
+    public List<TestResponseDTO> getAllTestesForSubject(String authorization, Long id) throws CostumeErrorException {
         return testResponseDtoMapper.map(
                 userGetService.getUserFromToken(authorization)
                         .getSubjects().stream()
@@ -112,11 +112,11 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<TestApplicationResponseDTO> getAllAppliedTestsForStudent(String authorization, Long id) {
-        return testApplicationResponseDtoMapper.map(testApplicationService.getAllTestApplicationsForUserAndSubject(userGetService.getUserFromToken(authorization), subjectService.getTeacherSubjectById(authorization, id)));
+    public List<TestApplicationResponseDTO> getAllAppliedTestsForStudent(String authorization, Long id) throws CostumeErrorException {
+        return testApplicationResponseDtoMapper.map(testApplicationService.getAllTestApplicationsForUserAndSubject(userGetService.getUserFromToken(authorization), subjectService.getSubjectById(authorization, id)));
     }
 
-    public Test getTestById(String auth, Long id) {
+    public Test getTestById(String auth, Long id) throws CostumeErrorException {
         Test test = testRepository.findById(id).orElseThrow(() -> new CostumeErrorException("Test not found", HttpStatus.BAD_REQUEST));
 
         if(!Objects.equals(test.getSubject().getSubjectProfessor().getId(), userGetService.getUserFromToken(auth).getId())) throw new CostumeErrorException("User is not a teacher of the subject the test is for", HttpStatus.BAD_REQUEST);

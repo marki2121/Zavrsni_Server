@@ -1,6 +1,7 @@
 package com.example.zavrsnirad.controller;
 
 import com.example.zavrsnirad.dto.request.SignupDTO;
+import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,7 +29,7 @@ public class AuthController {
 
     // Endpoint za registraciju novog korisnika
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@Validated @RequestBody SignupDTO data) {
+    public ResponseEntity<String> signup(@Validated @RequestBody SignupDTO data) throws CostumeErrorException {
         return ResponseEntity.ok(userService.signup(data));
     }
 

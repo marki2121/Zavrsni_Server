@@ -2,6 +2,7 @@ package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.dto.request.UpdateProfileDTO;
 import com.example.zavrsnirad.dto.request.UserDTO;
+import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.entity.UserProfile;
 import com.example.zavrsnirad.mapper.UserDtoMapper;
@@ -25,12 +26,12 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserDTO getSelf(String authorization) {
+    public UserDTO getSelf(String authorization) throws CostumeErrorException {
         return userDtoMapper.apply(userService.getUserFromToken(authorization));
     }
 
     @Override
-    public String updateSelfProfile(String authorization, UpdateProfileDTO data) {
+    public String updateSelfProfile(String authorization, UpdateProfileDTO data) throws CostumeErrorException {
         User user = userService.getUserFromToken(authorization);
         UserProfile userProfile = user.getUserProfile(); // dohvaćanje korisnickog profila
 

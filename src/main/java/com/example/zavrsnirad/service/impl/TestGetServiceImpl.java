@@ -20,7 +20,7 @@ public class TestGetServiceImpl implements TestGetService {
     }
 
     @Override
-    public Test getTestForUser(String authorization, Long testId) {
+    public Test getTestForUser(String authorization, Long testId) throws CostumeErrorException {
         User user = userGetService.getUserFromToken(authorization);
         Test test = testRepository.findById(testId).orElseThrow(() -> new CostumeErrorException("Test not found", HttpStatus.BAD_REQUEST));
 

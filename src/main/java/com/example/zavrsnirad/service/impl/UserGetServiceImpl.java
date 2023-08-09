@@ -8,7 +8,6 @@ import com.example.zavrsnirad.repository.UserRepository;
 import com.example.zavrsnirad.service.TokenService;
 import com.example.zavrsnirad.service.UserGetService;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class UserGetServiceImpl implements UserGetService {
     }
 
     @Override
-    public User getUserById(Long id) {
+    public User getUserById(Long id) throws CostumeErrorException {
         Optional<User> user = userRepository.findById(id);
 
         if(user.isEmpty()) {
@@ -44,8 +43,8 @@ public class UserGetServiceImpl implements UserGetService {
     }
 
     @Override
-    public User getUserFromToken(String bearer) {
-        return userRepository.findByUsername(tokenService.getUsernameFromToken(bearer)).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public User getUserFromToken(String bearer) throws CostumeErrorException {
+        return userRepository.findByUsername(tokenService.getUsernameFromToken(bearer)).orElseThrow(() -> new CostumeErrorException("User not found", HttpStatus.BAD_REQUEST));
     }
 
     @Override

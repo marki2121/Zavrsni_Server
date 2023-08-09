@@ -6,7 +6,6 @@ import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.entity.UserProfile;
 import com.example.zavrsnirad.mapper.SignupDtoMapper;
-import com.example.zavrsnirad.mapper.UserDtoMapper;
 import com.example.zavrsnirad.repository.UserRepository;
 import com.example.zavrsnirad.service.TokenService;
 import com.example.zavrsnirad.service.UserGetService;
@@ -28,15 +27,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserProfileService userProfileService;
     private final TokenService tokenService;
     private final SignupDtoMapper signupDtoMapper;
-    private final UserDtoMapper userDtoMapper;
 
-    public UserServiceImpl(UserRepository userRepository, UserGetService userGetService, SignupDtoMapper signupDtoMapper, UserProfileService userProfileService, TokenService tokenService, UserDtoMapper userDtoMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserGetService userGetService, SignupDtoMapper signupDtoMapper, UserProfileService userProfileService, TokenService tokenService) {
         this.userRepository = userRepository;
         this.userGetService = userGetService;
         this.signupDtoMapper = signupDtoMapper;
         this.userProfileService = userProfileService;
         this.tokenService = tokenService;
-        this.userDtoMapper = userDtoMapper;
     }
 
     // Metoda koja se koristi za dohvaćanje korisnika iz baze podataka prema njegovom username-u
@@ -54,7 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     // Testirano
     @Override
-    public String signup(SignupDTO data) {
+    public String signup(SignupDTO data) throws CostumeErrorException {
         if(data.password().equals(data.passwordConfirmation())) { // provjera da li se lozinke podudaraju
             if(userRepository.findByUsername(data.username()).isEmpty()) { // provjera da li korisnik već postoji
                 User user = signupDtoMapper.apply(data); // mapiranje podataka iz DTO-a u entitet (User)
@@ -75,7 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String deleteUserById(Long id) {
+    public String deleteUserById(Long id) throws CostumeErrorException {
         User user = userGetService.getUserById(id);;
 
         userRepository.delete(user);
@@ -84,7 +81,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String disableUserById(Long id) {
+    public String disableUserById(Long id) throws CostumeErrorException {
         User user = userGetService.getUserById(id);;
 
         user.setEnabled(false);
@@ -95,7 +92,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String enableUserById(Long id) {
+    public String enableUserById(Long id) throws CostumeErrorException {
         User user = userGetService.getUserById(id);;
 
         user.setEnabled(true);
@@ -106,7 +103,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String promoteUserById(Long id) {
+    public String promoteUserById(Long id) throws CostumeErrorException {
         User user = userGetService.getUserById(id);;
 
         if(user.getRole().equals(Role.ADMIN)) {
@@ -118,7 +115,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             userRepository.save(user);
         }
 
-        if(user.getRole().equals(Role.TEACHER)) {
+        if(user.getRole().equals(Role.STUDENT)) {
             user.setRole(Role.TEACHER);
             userRepository.save(user);
         }
@@ -127,7 +124,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String demoteUserById(Long id) {
+    public String demoteUserById(Long id) throws CostumeErrorException {
         User user = userGetService.getUserById(id);
 
         if(checkIfUserIsOnlyAdmin()) {

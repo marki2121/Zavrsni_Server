@@ -10,7 +10,11 @@ import java.util.function.Function;
 
 @Component
 public class SignupDtoMapper implements Function<SignupDTO, User> {
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
+    public SignupDtoMapper(BCryptPasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
     public User apply(SignupDTO signupDTO) {
         return new User(

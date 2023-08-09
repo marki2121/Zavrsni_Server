@@ -2,6 +2,7 @@ package com.example.zavrsnirad.controller;
 
 import com.example.zavrsnirad.dto.request.UpdateProfileDTO;
 import com.example.zavrsnirad.dto.request.UserDTO;
+import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.service.UserGetService;
 import com.example.zavrsnirad.service.UserProfileService;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,12 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<UserDTO> getSelf(@RequestHeader String Authorization) {
+    public ResponseEntity<UserDTO> getSelf(@RequestHeader String Authorization) throws CostumeErrorException {
         return ResponseEntity.ok(userProfileService.getSelf(Authorization));
     }
 
     @PutMapping("/profile/update")
-    public ResponseEntity<String> updateSelfProfile(@RequestHeader String Authorization, @RequestBody UpdateProfileDTO data){
+    public ResponseEntity<String> updateSelfProfile(@RequestHeader String Authorization, @RequestBody UpdateProfileDTO data) throws CostumeErrorException {
         return ResponseEntity.ok(userProfileService.updateSelfProfile(Authorization, data));
     }
 

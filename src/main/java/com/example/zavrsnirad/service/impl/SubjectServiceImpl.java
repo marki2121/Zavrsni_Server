@@ -39,7 +39,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public String createSubject(String authorization, SubjectCreateDTO data) {
+    public String createSubject(String authorization, SubjectCreateDTO data) throws CostumeErrorException {
         User user = checkIfUserTeacher(authorization);
 
         subjectRepository.save(subjectCreateDtoMapper.applyWithTeacher(data, user));
@@ -48,26 +48,26 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public List<SubjectDTO> getSubjects(String authorization) {
+    public List<SubjectDTO> getSubjects(String authorization) throws CostumeErrorException {
         User user = checkIfUserTeacher(authorization);
 
         return subjectDtoMapper.map(subjectRepository.findAllBySubjectProfessor(user));
     }
 
     @Override
-    public SubjectDTO getSubjectTeacher(String authorization, Long id) {
+    public SubjectDTO getSubjectTeacher(String authorization, Long id) throws CostumeErrorException {
         return subjectDtoMapper.apply(getTeacherSubjectById(authorization, id));
     }
 
     @Override
-    public String deleteSubject(String authorization, Long id) {
+    public String deleteSubject(String authorization, Long id) throws CostumeErrorException {
         subjectRepository.delete(getTeacherSubjectById(authorization, id));
 
         return "Subject deleted";
     }
 
     @Override
-    public String updateSubject(String authorization, Long id, SubjectCreateDTO data) {
+    public String updateSubject(String authorization, Long id, SubjectCreateDTO data) throws CostumeErrorException {
         Subject subject = getTeacherSubjectById(authorization, id);
 
         if(data.name() != null || !Objects.equals(data.name(), subject.getSubjectName())) {
@@ -92,12 +92,12 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public List<SubjectDTO> getSubjectsStudent(String authorization) {
+    public List<SubjectDTO> getSubjectsStudent(String authorization) throws CostumeErrorException {
         return subjectDtoMapper.map(userGetService.getUserFromToken(authorization).getSubjects());
     }
 
     @Override
-    public String addStudentToSubject(String authorization, Long id, Long studentId) {
+    public String addStudentToSubject(String authorization, Long id, Long studentId) throws CostumeErrorException {
         Subject subject = getTeacherSubjectById(authorization, id);
         User student = userGetService.getUserById(studentId);
 
@@ -111,7 +111,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public String removeStudentFromSubject(String authorization, Long id, Long studentId) {
+    public String removeStudentFromSubject(String authorization, Long id, Long studentId) throws CostumeErrorException {
         Subject subject = getTeacherSubjectById(authorization, id);
         User student = userGetService.getUserById(studentId);
 
@@ -125,12 +125,12 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public List<UserDTO> getStudentsFromSubject(String authorization, Long id) {
+    public List<UserDTO> getStudentsFromSubject(String authorization, Long id) throws CostumeErrorException {
         return userDtoMapper.map(getTeacherSubjectById(authorization, id).getStudents());
     }
 
     @Override
-    public SubjectDTO getSubject(String authorization, Long id) {
+    public SubjectDTO getSubject(String authorization, Long id) throws CostumeErrorException {
         User user = userGetService.getUserFromToken(authorization);
         Optional<Subject> subject = subjectRepository.findById(id);
 
@@ -141,7 +141,7 @@ public class SubjectServiceImpl implements SubjectService {
         return subjectDtoMapper.apply(subject.get());
     }
 
-    public User checkIfUserTeacher(String auth) {
+    public User checkIfUserTeacher(String auth) throws CostumeErrorException {
         User user = userGetService.getUserFromToken(auth);
 
         if(user.getRole().equals(Role.STUDENT)) throw new CostumeErrorException("You are not allowed to do this action", HttpStatus.BAD_REQUEST);
@@ -150,7 +150,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Subject getTeacherSubjectById(String auth,Long id) {
+    public Subject getTeacherSubjectById(String auth,Long id) throws CostumeErrorException {
         User user = checkIfUserTeacher(auth);
 
         Optional<Subject> subject = subjectRepository.findById(id);
@@ -159,5 +159,14 @@ public class SubjectServiceImpl implements SubjectService {
         if(!Objects.equals(subject.get().getSubjectProfessor().getId(), user.getId()) && user.getRole() != Role.ADMIN) throw new CostumeErrorException("You are not allowed to see this subject", HttpStatus.BAD_REQUEST);
 
         return subject.get();
+    }
+
+    @Override
+    public Subject getSubjectById(String authorization, Long id) throws CostumeErrorException {
+        User user = userGetService.getUserFromToken(authorization);
+        Subject subject = subjectRepository.findById(id).orElseThrow(() -> new CostumeErrorException("Subject not found", HttpStatus.BAD_REQUEST));
+
+        if(subject.getStudents().contains(user)) return subject;
+        else throw new CostumeErrorException("User not in subject", HttpStatus.BAD_REQUEST);
     }
 }

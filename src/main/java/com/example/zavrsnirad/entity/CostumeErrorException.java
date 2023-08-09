@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
-public class CostumeErrorException extends RuntimeException {
+public class CostumeErrorException extends Exception {
     private HttpStatus status = null;
     private Object data = null;
 

@@ -26,55 +26,55 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<UserResponseDTO> getAllUsers(String authorization) {
+    public List<UserResponseDTO> getAllUsers(String authorization) throws CostumeErrorException {
         checkUser(authorization);
 
         return userResponseDtoMapper.map(userGetService.findAllUsers());
     }
 
     @Override
-    public UserResponseDTO getUserById(String authorization, Long id) {
+    public UserResponseDTO getUserById(String authorization, Long id) throws CostumeErrorException {
         checkUser(authorization);
 
         return userResponseDtoMapper.apply(userGetService.getUserById(id));
     }
 
     @Override
-    public String deleteUserById(String authorization, Long id) {
+    public String deleteUserById(String authorization, Long id) throws CostumeErrorException {
         checkUser(authorization);
 
         return userService.deleteUserById(id);
     }
 
     @Override
-    public String disableUserById(String authorization, Long id) {
+    public String disableUserById(String authorization, Long id) throws CostumeErrorException {
         checkUser(authorization);
 
         return userService.disableUserById(id);
     }
 
     @Override
-    public String enableUserById(String authorization, Long id) {
+    public String enableUserById(String authorization, Long id) throws CostumeErrorException {
         checkUser(authorization);
 
         return userService.enableUserById(id);
     }
 
     @Override
-    public String promoteUserById(String authorization, Long id) {
+    public String promoteUserById(String authorization, Long id) throws CostumeErrorException {
         checkUser(authorization);
 
         return userService.promoteUserById(id);
     }
 
     @Override
-    public String demoteUserById(String authorization, Long id) {
+    public String demoteUserById(String authorization, Long id) throws CostumeErrorException {
         checkUser(authorization);
 
         return userService.demoteUserById(id);
     }
 
-    public void checkUser(String auth) {
+    public void checkUser(String auth) throws CostumeErrorException {
         User user = userGetService.getUserFromToken(auth);
 
         if(!user.getRole().equals(Role.ADMIN)) throw new CostumeErrorException("User is not admin", HttpStatus.BAD_REQUEST);

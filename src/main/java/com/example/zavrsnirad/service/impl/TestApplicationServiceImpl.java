@@ -1,5 +1,6 @@
 package com.example.zavrsnirad.service.impl;
 
+import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
 import com.example.zavrsnirad.entity.*;
 import com.example.zavrsnirad.mapper.TestApplicationResponseDtoMapper;
@@ -27,7 +28,7 @@ public class TestApplicationServiceImpl implements TestApplicationService {
     }
 
     @Override
-    public String applyForTest(String authorization, Long testId) {
+    public String applyForTest(String authorization, Long testId) throws CostumeErrorException {
         User user = userGetService.getUserFromToken(authorization);
         Test test = testService.getTestForUser(authorization, testId);
 
@@ -44,12 +45,12 @@ public class TestApplicationServiceImpl implements TestApplicationService {
     }
 
     @Override
-    public List<TestApplicationResponseDTO> getAllApplications(String authorization) {
+    public List<TestApplicationResponseDTO> getAllApplications(String authorization) throws CostumeErrorException {
         return testApplicationResponseDtoMapper.map(testApplicationRepository.findAllByStudent(userGetService.getUserFromToken(authorization)));
     }
 
     @Override
-    public String deleteApplication(String authorization, Long applicationId) {
+    public String deleteApplication(String authorization, Long applicationId) throws CostumeErrorException {
         User user = userGetService.getUserFromToken(authorization);
         TestApplication testApplication = testApplicationRepository.findById(applicationId).orElseThrow(() -> new CostumeErrorException("Test application not found", HttpStatus.BAD_REQUEST));
 
@@ -61,11 +62,11 @@ public class TestApplicationServiceImpl implements TestApplicationService {
     }
 
     @Override
-    public TestApplication getTestApplicationById(String authorization, Long id) {
+    public TestApplication getTestApplicationById(String authorization, Long id) throws CostumeErrorException {
         User user = userGetService.getUserFromToken(authorization);
         TestApplication testApplication = testApplicationRepository.findById(id).orElseThrow(() -> new CostumeErrorException("Test application not found", HttpStatus.BAD_REQUEST));
 
-        if(!testApplication.getStudent().equals(user)) throw new CostumeErrorException("You are not the owner of this test application", HttpStatus.BAD_REQUEST);
+        if(!testApplication.getStudent().equals(user) && user.getRole().equals(Role.STUDENT)) throw new CostumeErrorException("You are not the owner of this test application", HttpStatus.BAD_REQUEST);
 
         return testApplication;
     }
