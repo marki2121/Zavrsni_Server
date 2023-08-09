@@ -7,12 +7,16 @@ import com.example.zavrsnirad.service.FileService;
 import com.example.zavrsnirad.service.UserGetService;
 import com.example.zavrsnirad.service.UserProfileService;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,11 +49,12 @@ public class FileServiceImpl implements FileService {
         String extencion = file.getContentType().equals("image/jpeg") ? ".jpeg" : ".png";
 
         Path filePath = PATH.resolve(user.getId() + extencion);
+        Files.deleteIfExists(filePath);
         Files.copy(file.getInputStream(), filePath);
 
         String fileUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/file/download/")
-                .path(String.valueOf(user.getId()))
+                .path(user.getId() + extencion)
                 .toUriString();
 
         userProfile.setImageUrl(fileUri);
@@ -57,5 +62,25 @@ public class FileServiceImpl implements FileService {
         userProfileService.saveProfile(userProfile);
 
         return "File uploaded successfully!";
+    }
+
+    @Override
+    public Resource downloadFile(String fileName) throws RuntimeException, FileNotFoundException {
+        try {
+            Path filePath = PATH.resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new FileNotFoundException("File not found " + fileName);
+            }
+        } catch (MalformedURLException ex) {
+            throw new FileNotFoundException("File not found " + fileName);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
