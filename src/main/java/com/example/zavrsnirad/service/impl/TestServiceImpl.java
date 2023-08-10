@@ -10,7 +10,7 @@ import com.example.zavrsnirad.entity.TestApplication;
 import com.example.zavrsnirad.mapper.TestApplicationResponseDtoMapper;
 import com.example.zavrsnirad.mapper.TestResponseDtoMapper;
 import com.example.zavrsnirad.repository.TestRepository;
-import com.example.zavrsnirad.service.SubjectService;
+import com.example.zavrsnirad.service.SubjectGetService;
 import com.example.zavrsnirad.service.TestApplicationService;
 import com.example.zavrsnirad.service.TestService;
 import com.example.zavrsnirad.service.UserGetService;
@@ -27,22 +27,22 @@ public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final TestApplicationService testApplicationService;
     private final UserGetService userGetService;
-    private final SubjectService subjectService;
+    private final SubjectGetService subjectGetService;
     private final TestResponseDtoMapper testResponseDtoMapper;
     private final TestApplicationResponseDtoMapper testApplicationResponseDtoMapper;
 
-    public TestServiceImpl(TestRepository testRepository, TestApplicationService testApplicationService, UserGetService userGetService, SubjectService subjectService, TestResponseDtoMapper testResponseDtoMapper, TestApplicationResponseDtoMapper testApplicationResponseDtoMapper) {
+    public TestServiceImpl(TestRepository testRepository, TestApplicationService testApplicationService, UserGetService userGetService, SubjectGetService subjectGetService, TestResponseDtoMapper testResponseDtoMapper, TestApplicationResponseDtoMapper testApplicationResponseDtoMapper) {
         this.testRepository = testRepository;
         this.testApplicationService = testApplicationService;
         this.userGetService = userGetService;
-        this.subjectService = subjectService;
+        this.subjectGetService = subjectGetService;
         this.testResponseDtoMapper = testResponseDtoMapper;
         this.testApplicationResponseDtoMapper = testApplicationResponseDtoMapper;
     }
 
     @Override
     public String createTest(String authorization, Long id, TestCreateDTO data) throws ParseException, CostumeErrorException {
-        Subject subject = subjectService.getTeacherSubjectById(authorization, id);
+        Subject subject = subjectGetService.getTeacherSubjectById(authorization, id);
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 
         if(subject.getTests().size() >= 4) throw new CostumeErrorException("Subject has 4 tests already", HttpStatus.BAD_REQUEST);
@@ -60,12 +60,14 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public List<TestResponseDTO> getTestsForSubject(String authorization, Long id) throws CostumeErrorException {
-        return testResponseDtoMapper.map(subjectService.getTeacherSubjectById(authorization, id).getTests());
+        return testResponseDtoMapper.map(subjectGetService.getTeacherSubjectById(authorization, id).getTests());
     }
 
     @Override
     public String deleteTest(String authorization, Long testId) throws CostumeErrorException {
         Test test = getTestById(authorization, testId);
+
+        test.getTestApplication().forEach(testApplicationService::deleteApplicationEntity);
 
         testRepository.delete(test);
 
@@ -113,7 +115,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public List<TestApplicationResponseDTO> getAllAppliedTestsForStudent(String authorization, Long id) throws CostumeErrorException {
-        return testApplicationResponseDtoMapper.map(testApplicationService.getAllTestApplicationsForUserAndSubject(userGetService.getUserFromToken(authorization), subjectService.getSubjectById(authorization, id)));
+        return testApplicationResponseDtoMapper.map(testApplicationService.getAllTestApplicationsForUserAndSubject(userGetService.getUserFromToken(authorization), subjectGetService.getSubjectById(authorization, id)));
     }
 
     public Test getTestById(String auth, Long id) throws CostumeErrorException {

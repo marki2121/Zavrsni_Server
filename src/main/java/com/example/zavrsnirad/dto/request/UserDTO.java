@@ -11,5 +11,7 @@ public record UserDTO(Long id,
                       String country,
                       String phone,
                       String role,
-                      String about) {
+                      String about,
+                      String imageUrl
+) {
 }

@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/file")
 public class FileController {
 

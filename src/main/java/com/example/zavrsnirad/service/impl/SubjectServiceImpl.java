@@ -1,6 +1,5 @@
 package com.example.zavrsnirad.service.impl;
 
-import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.request.SubjectCreateDTO;
 import com.example.zavrsnirad.dto.request.SubjectDTO;
 import com.example.zavrsnirad.dto.request.UserDTO;
@@ -11,7 +10,9 @@ import com.example.zavrsnirad.mapper.SubjectCreateDtoMapper;
 import com.example.zavrsnirad.mapper.SubjectDtoMapper;
 import com.example.zavrsnirad.mapper.UserDtoMapper;
 import com.example.zavrsnirad.repository.SubjectRepository;
+import com.example.zavrsnirad.service.SubjectGetService;
 import com.example.zavrsnirad.service.SubjectService;
+import com.example.zavrsnirad.service.TestService;
 import com.example.zavrsnirad.service.UserGetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,18 @@ import java.util.Optional;
 public class SubjectServiceImpl implements SubjectService {
 
     private final SubjectRepository subjectRepository;
+    private final SubjectGetService subjectGetService;
     private final UserGetService userGetService;
+    private final TestService testService;
     private final SubjectCreateDtoMapper subjectCreateDtoMapper;
     private final SubjectDtoMapper subjectDtoMapper;
     private final UserDtoMapper userDtoMapper;
 
-    public SubjectServiceImpl(SubjectRepository subjectRepository, UserGetService userGetService, SubjectCreateDtoMapper subjectCreateDtoMapper, SubjectDtoMapper subjectDtoMapper, UserDtoMapper userDtoMapper) {
+    public SubjectServiceImpl(SubjectRepository subjectRepository, SubjectGetService subjectGetService, UserGetService userGetService, TestService testService, SubjectCreateDtoMapper subjectCreateDtoMapper, SubjectDtoMapper subjectDtoMapper, UserDtoMapper userDtoMapper) {
         this.subjectRepository = subjectRepository;
+        this.subjectGetService = subjectGetService;
         this.userGetService = userGetService;
+        this.testService = testService;
         this.subjectCreateDtoMapper = subjectCreateDtoMapper;
         this.subjectDtoMapper = subjectDtoMapper;
         this.userDtoMapper = userDtoMapper;
@@ -40,7 +45,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public String createSubject(String authorization, SubjectCreateDTO data) throws CostumeErrorException {
-        User user = checkIfUserTeacher(authorization);
+        User user = subjectGetService.checkIfUserTeacher(authorization);
 
         subjectRepository.save(subjectCreateDtoMapper.applyWithTeacher(data, user));
 
@@ -49,26 +54,35 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public List<SubjectDTO> getSubjects(String authorization) throws CostumeErrorException {
-        User user = checkIfUserTeacher(authorization);
+        User user = subjectGetService.checkIfUserTeacher(authorization);
 
         return subjectDtoMapper.map(subjectRepository.findAllBySubjectProfessor(user));
     }
 
     @Override
     public SubjectDTO getSubjectTeacher(String authorization, Long id) throws CostumeErrorException {
-        return subjectDtoMapper.apply(getTeacherSubjectById(authorization, id));
+        return subjectDtoMapper.apply(subjectGetService.getTeacherSubjectById(authorization, id));
     }
 
     @Override
     public String deleteSubject(String authorization, Long id) throws CostumeErrorException {
-        subjectRepository.delete(getTeacherSubjectById(authorization, id));
+        Subject subject = subjectGetService.getTeacherSubjectById(authorization, id);
+
+        subject.getTests().forEach((t) -> {
+            try {
+                testService.deleteTest(authorization, t.getId());
+            } catch (CostumeErrorException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        subjectRepository.delete(subject);
 
         return "Subject deleted";
     }
 
     @Override
     public String updateSubject(String authorization, Long id, SubjectCreateDTO data) throws CostumeErrorException {
-        Subject subject = getTeacherSubjectById(authorization, id);
+        Subject subject = subjectGetService.getTeacherSubjectById(authorization, id);
 
         if(data.name() != null || !Objects.equals(data.name(), subject.getSubjectName())) {
             subject.setSubjectName(data.name());
@@ -98,7 +112,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public String addStudentToSubject(String authorization, Long id, Long studentId) throws CostumeErrorException {
-        Subject subject = getTeacherSubjectById(authorization, id);
+        Subject subject = subjectGetService.getTeacherSubjectById(authorization, id);
         User student = userGetService.getUserById(studentId);
 
         if(subject.getStudents().contains(student)) throw new CostumeErrorException("Student already in subject", HttpStatus.BAD_REQUEST);
@@ -112,7 +126,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public String removeStudentFromSubject(String authorization, Long id, Long studentId) throws CostumeErrorException {
-        Subject subject = getTeacherSubjectById(authorization, id);
+        Subject subject = subjectGetService.getTeacherSubjectById(authorization, id);
         User student = userGetService.getUserById(studentId);
 
         if(!subject.getStudents().contains(student)) throw new CostumeErrorException("Student not in subject", HttpStatus.BAD_REQUEST);
@@ -126,7 +140,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public List<UserDTO> getStudentsFromSubject(String authorization, Long id) throws CostumeErrorException {
-        return userDtoMapper.map(getTeacherSubjectById(authorization, id).getStudents());
+        return userDtoMapper.map(subjectGetService.getTeacherSubjectById(authorization, id).getStudents());
     }
 
     @Override
@@ -134,39 +148,11 @@ public class SubjectServiceImpl implements SubjectService {
         User user = userGetService.getUserFromToken(authorization);
         Optional<Subject> subject = subjectRepository.findById(id);
 
-        if(subject.isEmpty()) throw new CostumeErrorException("Subject not found", HttpStatus.BAD_REQUEST);
-        if(!user.getSubjects().contains(subject.get())) throw new CostumeErrorException("You are not allowed to see this subject", HttpStatus.BAD_REQUEST);
+        if (subject.isEmpty()) throw new CostumeErrorException("Subject not found", HttpStatus.BAD_REQUEST);
+        if (!user.getSubjects().contains(subject.get()))
+            throw new CostumeErrorException("You are not allowed to see this subject", HttpStatus.BAD_REQUEST);
 
 
         return subjectDtoMapper.apply(subject.get());
-    }
-
-    public User checkIfUserTeacher(String auth) throws CostumeErrorException {
-        User user = userGetService.getUserFromToken(auth);
-
-        if(user.getRole().equals(Role.STUDENT)) throw new CostumeErrorException("You are not allowed to do this action", HttpStatus.BAD_REQUEST);
-
-        return user;
-    }
-
-    @Override
-    public Subject getTeacherSubjectById(String auth,Long id) throws CostumeErrorException {
-        User user = checkIfUserTeacher(auth);
-
-        Optional<Subject> subject = subjectRepository.findById(id);
-
-        if(subject.isEmpty()) throw new CostumeErrorException("Subject not found", HttpStatus.BAD_REQUEST);
-        if(!Objects.equals(subject.get().getSubjectProfessor().getId(), user.getId()) && user.getRole() != Role.ADMIN) throw new CostumeErrorException("You are not allowed to see this subject", HttpStatus.BAD_REQUEST);
-
-        return subject.get();
-    }
-
-    @Override
-    public Subject getSubjectById(String authorization, Long id) throws CostumeErrorException {
-        User user = userGetService.getUserFromToken(authorization);
-        Subject subject = subjectRepository.findById(id).orElseThrow(() -> new CostumeErrorException("Subject not found", HttpStatus.BAD_REQUEST));
-
-        if(subject.getStudents().contains(user)) return subject;
-        else throw new CostumeErrorException("User not in subject", HttpStatus.BAD_REQUEST);
     }
 }

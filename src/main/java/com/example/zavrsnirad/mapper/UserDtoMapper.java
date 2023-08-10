@@ -23,7 +23,8 @@ public class UserDtoMapper implements Function<User, UserDTO> {
                 user.getUserProfile().getCountry(),
                 user.getUserProfile().getPhoneNumber(),
                 user.getRole().name(),
-                user.getUserProfile().getAboutMe()
+                user.getUserProfile().getAboutMe(),
+                user.getUserProfile().getImageUrl()
         );
     }
 

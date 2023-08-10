@@ -81,4 +81,9 @@ public class TestApplicationServiceImpl implements TestApplicationService {
     public List<TestApplication> getAllTestApplicationsForUserAndSubject(User user, Subject subject) {
         return testApplicationRepository.findAllByStudentAndTest_Subject(user, subject);
     }
+
+    @Override
+    public void deleteApplicationEntity(TestApplication t) {
+        testApplicationRepository.delete(t);
+    }
 }

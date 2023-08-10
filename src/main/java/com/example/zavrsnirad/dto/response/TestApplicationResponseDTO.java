@@ -8,6 +8,7 @@ public record TestApplicationResponseDTO(
         String teacherName,
         String studentName,
         Integer grade,
-        Boolean testGraded
+        Boolean testGraded,
+        String imageUrl
 ) {
 }

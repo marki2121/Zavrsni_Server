@@ -24,4 +24,5 @@ public interface TestService {
     List<TestResponseDTO> getAllTestesForSubject(String authorization, Long id) throws CostumeErrorException;
 
     List<TestApplicationResponseDTO> getAllAppliedTestsForStudent(String authorization, Long id) throws CostumeErrorException;
+
 }

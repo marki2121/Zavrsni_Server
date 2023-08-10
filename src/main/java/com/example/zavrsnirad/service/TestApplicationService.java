@@ -20,4 +20,6 @@ public interface TestApplicationService {
     String saveTestApplication(TestApplication testApplication);
 
     List<TestApplication> getAllTestApplicationsForUserAndSubject(User user, Subject subject);
+
+    void deleteApplicationEntity(TestApplication t);
 }

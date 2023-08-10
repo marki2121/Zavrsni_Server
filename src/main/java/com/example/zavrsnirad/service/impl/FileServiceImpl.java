@@ -53,7 +53,7 @@ public class FileServiceImpl implements FileService {
         Files.copy(file.getInputStream(), filePath);
 
         String fileUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/file/download/")
+                .path("api/file/download/")
                 .path(user.getId() + extencion)
                 .toUriString();
 

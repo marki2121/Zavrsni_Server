@@ -22,7 +22,8 @@ public class TestApplicationResponseDtoMapper implements Function<TestApplicatio
                 testApplication.getTest().getSubject().getSubjectProfessor().getUserProfile().getFirstName() + " " + testApplication.getTest().getSubject().getSubjectProfessor().getUserProfile().getLastName(),
                 testApplication.getStudent().getUserProfile().getFirstName() + " " + testApplication.getStudent().getUserProfile().getLastName(),
                 testApplication.getTestGrade(),
-                testApplication.getTestGraded()
+                testApplication.getTestGraded(),
+                testApplication.getStudent().getUserProfile().getImageUrl()
         );
     }
 

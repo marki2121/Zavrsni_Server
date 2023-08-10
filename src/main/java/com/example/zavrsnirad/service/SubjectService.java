@@ -4,7 +4,6 @@ import com.example.zavrsnirad.dto.request.SubjectCreateDTO;
 import com.example.zavrsnirad.dto.request.SubjectDTO;
 import com.example.zavrsnirad.dto.request.UserDTO;
 import com.example.zavrsnirad.entity.CostumeErrorException;
-import com.example.zavrsnirad.entity.Subject;
 
 import java.util.List;
 
@@ -28,8 +27,4 @@ public interface SubjectService {
     String removeStudentFromSubject(String authorization, Long id, Long studentId) throws CostumeErrorException;
 
     List<UserDTO> getStudentsFromSubject(String authorization, Long id) throws CostumeErrorException;
-
-    Subject getTeacherSubjectById(String auth,Long id) throws CostumeErrorException;
-
-    Subject getSubjectById(String authorization, Long id) throws CostumeErrorException;
 }
