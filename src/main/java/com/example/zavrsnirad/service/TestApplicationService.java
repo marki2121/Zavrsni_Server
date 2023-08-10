@@ -22,4 +22,6 @@ public interface TestApplicationService {
     List<TestApplication> getAllTestApplicationsForUserAndSubject(User user, Subject subject);
 
     void deleteApplicationEntity(TestApplication t);
+
+    void deleteAllUserApplications(User userById);
 }

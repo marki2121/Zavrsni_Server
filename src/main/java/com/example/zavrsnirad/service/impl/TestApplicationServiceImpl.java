@@ -86,4 +86,9 @@ public class TestApplicationServiceImpl implements TestApplicationService {
     public void deleteApplicationEntity(TestApplication t) {
         testApplicationRepository.delete(t);
     }
+
+    @Override
+    public void deleteAllUserApplications(User user) {
+        testApplicationRepository.deleteByStudent(user);
+    }
 }

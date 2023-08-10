@@ -6,6 +6,7 @@ import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.UserResponseDtoMapper;
 import com.example.zavrsnirad.service.AdminService;
+import com.example.zavrsnirad.service.TestApplicationService;
 import com.example.zavrsnirad.service.UserGetService;
 import com.example.zavrsnirad.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -17,11 +18,13 @@ import java.util.List;
 public class AdminServiceImpl implements AdminService {
     private final UserService userService;
     private final UserGetService userGetService;
+    private final TestApplicationService testApplicationService;
     private final UserResponseDtoMapper userResponseDtoMapper;
 
-    public AdminServiceImpl(UserService userService, UserGetService userGetService, UserResponseDtoMapper userResponseDtoMapper) {
+    public AdminServiceImpl(UserService userService, UserGetService userGetService, TestApplicationService testApplicationService, UserResponseDtoMapper userResponseDtoMapper) {
         this.userService = userService;
         this.userGetService = userGetService;
+        this.testApplicationService = testApplicationService;
         this.userResponseDtoMapper = userResponseDtoMapper;
     }
 
@@ -42,6 +45,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public String deleteUserById(String authorization, Long id) throws CostumeErrorException {
         checkUser(authorization);
+
+        testApplicationService.deleteAllUserApplications(userGetService.getUserById(id));
 
         return userService.deleteUserById(id);
     }
