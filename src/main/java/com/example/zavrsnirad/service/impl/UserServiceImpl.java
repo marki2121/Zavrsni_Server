@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public String deleteUserById(Long id) throws CostumeErrorException {
-        User user = userGetService.getUserById(id);;
+        User user = userGetService.getUserById(id);
 
         userRepository.delete(user);
 
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public String disableUserById(Long id) throws CostumeErrorException {
-        User user = userGetService.getUserById(id);;
+        User user = userGetService.getUserById(id);
 
         user.setEnabled(false);
 
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public String enableUserById(Long id) throws CostumeErrorException {
-        User user = userGetService.getUserById(id);;
+        User user = userGetService.getUserById(id);
 
         user.setEnabled(true);
 
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public String promoteUserById(Long id) throws CostumeErrorException {
-        User user = userGetService.getUserById(id);;
+        User user = userGetService.getUserById(id);
 
         if(user.getRole().equals(Role.ADMIN)) {
             throw new CostumeErrorException("User is already admin", HttpStatus.BAD_REQUEST);
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public String demoteUserById(Long id) throws CostumeErrorException {
         User user = userGetService.getUserById(id);
 
-        if(checkIfUserIsOnlyAdmin()) {
+        if(checkIfUserIsOnlyAdmin() && user.getRole().equals(Role.ADMIN)) {
             throw new CostumeErrorException("User is only admin", HttpStatus.BAD_REQUEST);
         }
 

@@ -2,10 +2,7 @@ package com.example.zavrsnirad.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 // Ova klasa predstavlja entitet korisnickog profila u bazi podataka
 @Entity
@@ -14,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
