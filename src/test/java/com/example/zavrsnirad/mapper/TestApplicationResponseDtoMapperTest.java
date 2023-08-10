@@ -10,8 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {TestApplicationResponseDtoMapper.class})
 @ExtendWith(org.springframework.test.context.junit.jupiter.SpringExtension.class)
@@ -24,19 +25,23 @@ class TestApplicationResponseDtoMapperTest {
         UserProfile userProfile = new UserProfile();
         com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test();
         Subject subject = new Subject();
+        TestApplication testApplication = new TestApplication();
         subject.setSubjectName("Subject Name");
         subject.setSubjectProfessor(user);
-        userProfile.setAboutMe("First Name");
+        userProfile.setFirstName("First Name");
         userProfile.setLastName("Last Name");
         user.setUserProfile(userProfile);
         test.setSubject(subject);
+        test.setTestNote("asd");
+        test.setTestDate(new Date());
+        test.setId(1L);
 
-        TestApplication testApplication = mock(TestApplication.class);
-        when(testApplication.getId()).thenReturn(1L);
-        when(testApplication.getTestGrade()).thenReturn(1);
-        when(testApplication.getTestGraded()).thenReturn(true);
-        when(testApplication.getTest()).thenReturn(test);
-        when(testApplication.getStudent()).thenReturn(user);
+        testApplication.setTest(test);
+        testApplication.setTestNote("Test Note");
+        testApplication.setTestGrade(1);
+        testApplication.setTestGraded(true);
+        testApplication.setId(1L);
+        testApplication.setStudent(user);
 
 
         TestApplicationResponseDTO actualApplyResult = new TestApplicationResponseDtoMapper().apply(testApplication);
@@ -44,9 +49,5 @@ class TestApplicationResponseDtoMapperTest {
         assertEquals(1L, actualApplyResult.id());
         assertEquals(1, actualApplyResult.grade());
         assertEquals(true, actualApplyResult.testGraded());
-
-        verify(testApplication).getId();
-        verify(testApplication).getTestGrade();
-        verify(testApplication).getTestGraded();
     }
 }

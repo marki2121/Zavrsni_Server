@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
@@ -43,7 +42,7 @@ class AuthControllerTest {
     @DisplayName("Test login endpoint with valid credentials")
     public void loginTestValid() throws Exception {
         // when
-        when(userService.login(Mockito.any(Authentication.class))).thenReturn(ResponseEntity.ok("OK"));
+        when(userService.login(Mockito.any(Authentication.class))).thenReturn("token");
 
         // then
         mockMvc.perform(get("/api/auth/login")
@@ -63,7 +62,7 @@ class AuthControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         //when
-        when(userService.signup(Mockito.any(SignupDTO.class))).thenReturn(ResponseEntity.ok("OK"));
+        when(userService.signup(Mockito.any(SignupDTO.class))).thenReturn("User created");
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signup")

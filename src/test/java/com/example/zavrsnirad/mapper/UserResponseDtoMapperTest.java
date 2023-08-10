@@ -40,6 +40,7 @@ class UserResponseDtoMapperTest {
         user.setId(1L);
         user.setUsername("jane.doe");
         user.setUserProfile(userProfile);
+        user.setEnabled(true);
         UserResponseDTO actualApplyResult = userResponseDtoMapper.apply(user);
 
         //then

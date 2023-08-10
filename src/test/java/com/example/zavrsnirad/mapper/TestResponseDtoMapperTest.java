@@ -34,7 +34,7 @@ class TestResponseDtoMapperTest {
 
         assertEquals("Test Note", actualApplyResult.note());
         assertEquals(1L, actualApplyResult.id());
-        assertEquals(new Date(1,1,1,1,1,1), actualApplyResult.date());
+        assertEquals("01-02-1901", actualApplyResult.date());
 
         verify(test).getTestDate();
         verify(test).getTestNote();

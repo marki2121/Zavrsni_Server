@@ -13,22 +13,9 @@ class TestCreateDTOTest {
     @DisplayName("Test constructor")
     void testConstructor() {
         Date date = new Date();
-        TestCreateDTO actualTestCreateDTO = new TestCreateDTO(date, "test");
+        TestCreateDTO actualTestCreateDTO = new TestCreateDTO(date.toString(), "test");
 
-        assertEquals(date, actualTestCreateDTO.date());
+        assertEquals(date.toString(), actualTestCreateDTO.date());
         assertEquals("test", actualTestCreateDTO.note());
-    }
-
-    @Test
-    @DisplayName("Test date")
-    void date() {
-        Date date = new Date();
-        assertEquals(date, (new TestCreateDTO(date, "test")).date());
-    }
-
-    @Test
-    @DisplayName("Test note")
-    void note() {
-        assertEquals("test", (new TestCreateDTO(new Date(), "test")).note());
     }
 }

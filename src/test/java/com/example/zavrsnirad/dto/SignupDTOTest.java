@@ -17,24 +17,5 @@ class SignupDTOTest {
         assertEquals("janedoe", actualSignupDTO.username());
         assertEquals("Password Confirmation", actualSignupDTO.passwordConfirmation());
     }
-
-    @Test
-    @DisplayName("Test password")
-    void testPassword() {
-        assertEquals("iloveyou", (new SignupDTO("janedoe", "iloveyou", "Password Confirmation")).password());
-    }
-
-    @Test
-    @DisplayName("Test password confirmation")
-    void testPasswordConfirmation() {
-        assertEquals("Password Confirmation",
-                (new SignupDTO("janedoe", "iloveyou", "Password Confirmation")).passwordConfirmation());
-    }
-
-    @Test
-    @DisplayName("Test username")
-    void testUsername() {
-        assertEquals("janedoe", (new SignupDTO("janedoe", "iloveyou", "Password Confirmation")).username());
-    }
 }
 

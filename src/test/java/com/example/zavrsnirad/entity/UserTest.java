@@ -4,6 +4,8 @@ import com.example.zavrsnirad.appenum.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
@@ -64,7 +66,7 @@ class UserTest {
     void testConstructor2() {
         // given
         UserProfile userProfile = new UserProfile();
-        User actualUser = new User(1L, "janedoe", "iloveyou", Role.ADMIN, true, userProfile);
+        User actualUser = new User(1L, "janedoe", "iloveyou", Role.ADMIN, true, userProfile, List.of());
 
         // assert
         assertEquals(1L, actualUser.getId().longValue());

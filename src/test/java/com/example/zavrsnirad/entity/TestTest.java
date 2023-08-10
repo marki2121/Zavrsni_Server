@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -94,7 +95,7 @@ class TestTest {
         Subject subject = new Subject();
         Date date = new Date();
         subject.setId(1L);
-        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, date, "Test note");
+        com.example.zavrsnirad.entity.Test test = new com.example.zavrsnirad.entity.Test(1L, subject, date, "Test note", List.of());
 
         assertEquals(1L, test.getId());
         assertEquals(subject, test.getSubject());
