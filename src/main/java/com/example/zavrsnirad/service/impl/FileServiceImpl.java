@@ -6,14 +6,12 @@ import com.example.zavrsnirad.entity.UserProfile;
 import com.example.zavrsnirad.service.FileService;
 import com.example.zavrsnirad.service.UserGetService;
 import com.example.zavrsnirad.service.UserProfileService;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,7 +22,7 @@ import java.nio.file.Paths;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private final Path PATH = Paths.get(new ClassPathResource("").getFile().getAbsolutePath() + File.separator + "files");
+    private final Path PATH = Paths.get("./files");
     private final UserGetService userGetService;
     private final UserProfileService userProfileService;
 
