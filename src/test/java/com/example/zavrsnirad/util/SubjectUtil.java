@@ -19,6 +19,19 @@ public final class SubjectUtil {
                 List.of(new Test()));
     }
 
+    public static Subject generateNoUsers() {
+        return new Subject(
+                1L,
+                "name",
+                "description",
+                1,
+                1,
+                1,
+                UserUtil.generateTeacher(),
+                List.of(),
+                List.of(new Test()));
+    }
+
     public static Subject generateMaxTests() {
         return new Subject(
                 1L,
@@ -30,5 +43,9 @@ public final class SubjectUtil {
                 UserUtil.generateTeacher(),
                 UserUtil.generateList(),
                 List.of(new Test(), new Test(), new Test(), new Test()));
+    }
+
+    public static List<Subject> generateList() {
+        return List.of(generate());
     }
 }
