@@ -3,7 +3,6 @@ package com.example.zavrsnirad.service.impl;
 import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.response.UserResponseDTO;
 import com.example.zavrsnirad.entity.CostumeErrorException;
-import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.UserResponseDtoMapper;
 import com.example.zavrsnirad.service.AdminService;
 import com.example.zavrsnirad.service.TestApplicationService;
@@ -80,8 +79,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     public void checkUser(String auth) throws CostumeErrorException {
-        User user = userGetService.getUserFromToken(auth);
-
-        if(!user.getRole().equals(Role.ADMIN)) throw new CostumeErrorException("User is not admin", HttpStatus.BAD_REQUEST);
+        if(!userGetService.getUserFromToken(auth).getRole().equals(Role.ADMIN)) throw new CostumeErrorException("User is not admin", HttpStatus.BAD_REQUEST);
     }
 }
