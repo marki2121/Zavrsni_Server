@@ -39,6 +39,18 @@ public final class UserUtil {
                 .build();
     }
 
+    public static User generateTeacherWithSubject() {
+        return User.builder()
+                .id(4L)
+                .username("username")
+                .password("password")
+                .role(Role.TEACHER)
+                .enabled(true)
+                .userProfile(UserProfileUtil.generate())
+                .subjects(List.of(SubjectUtil.generate()))
+                .build();
+    }
+
     public static List<User> generateList() {
         return List.of(generate());
     }
