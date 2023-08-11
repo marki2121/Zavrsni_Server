@@ -54,7 +54,7 @@ public class TestApplicationServiceImpl implements TestApplicationService {
         User user = userGetService.getUserFromToken(authorization);
         TestApplication testApplication = testApplicationRepository.findById(applicationId).orElseThrow(() -> new CostumeErrorException("Test application not found", HttpStatus.BAD_REQUEST));
 
-        if(!testApplication.getStudent().equals(user)) throw new CostumeErrorException("You are not the owner of this test application", HttpStatus.BAD_REQUEST);
+        if(!testApplication.getStudent().getId().equals(user.getId())) throw new CostumeErrorException("You are not the owner of this test application", HttpStatus.BAD_REQUEST);
 
         testApplicationRepository.delete(testApplication);
 
@@ -66,7 +66,7 @@ public class TestApplicationServiceImpl implements TestApplicationService {
         User user = userGetService.getUserFromToken(authorization);
         TestApplication testApplication = testApplicationRepository.findById(id).orElseThrow(() -> new CostumeErrorException("Test application not found", HttpStatus.BAD_REQUEST));
 
-        if(!testApplication.getStudent().equals(user) && user.getRole().equals(Role.STUDENT)) throw new CostumeErrorException("You are not the owner of this test application", HttpStatus.BAD_REQUEST);
+        if(!testApplication.getStudent().getId().equals(user.getId()) && user.getRole().equals(Role.STUDENT)) throw new CostumeErrorException("You are not the owner of this test application", HttpStatus.BAD_REQUEST);
 
         return testApplication;
     }
