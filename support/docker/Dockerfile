@@ -1,4 +1,4 @@
 FROM openjdk
 WORKDIR /app
-COPY ./ZavrsniRad-1.5.jar /app
-CMD ["java", "-jar", "ZavrsniRad-1.5.jar"]
+COPY ./ZavrsniRad-1.6.jar /app
+CMD ["java", "-jar", "ZavrsniRad-1.6.jar"]

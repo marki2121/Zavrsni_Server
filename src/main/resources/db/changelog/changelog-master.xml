@@ -217,4 +217,46 @@
             <column name="subject_professor">5</column>
         </insert>
     </changeSet>
+    <changeSet id="addStudents" author="Marko">
+        <insert tableName="user_subject">
+            <column name="subject_id">1</column>
+            <column name="user_id">2</column>
+        </insert>
+        <insert tableName="user_subject">
+            <column name="subject_id">1</column>
+            <column name="user_id">3</column>
+        </insert>
+        <insert tableName="user_subject">
+            <column name="subject_id">1</column>
+            <column name="user_id">4</column>
+        </insert>
+    </changeSet>
+    <changeSet id="addTests" author="Marko">
+        <insert tableName="tests">
+            <column name="id">1</column>
+            <column name="subject_id">1</column>
+            <column name="test_date">2023-12-17</column>
+            <column name="test_note">Note</column>
+        </insert>
+        <insert tableName="test_application">
+            <column name="id">1</column>
+            <column name="test_id">1</column>
+            <column name="user_id">2</column>
+            <column name="test_grade">50</column>
+            <column name="test_note">Note</column>
+            <column name="test_graded" valueBoolean="true"/>
+        </insert>
+        <insert tableName="test_application">
+            <column name="id">2</column>
+            <column name="test_id">1</column>
+            <column name="user_id">3</column>
+            <column name="test_graded" valueBoolean="false"/>
+        </insert>
+        <insert tableName="test_application">
+            <column name="id">3</column>
+            <column name="test_id">1</column>
+            <column name="user_id">4</column>
+            <column name="test_graded" valueBoolean="false"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
