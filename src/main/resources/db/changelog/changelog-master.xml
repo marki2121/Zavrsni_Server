@@ -130,4 +130,91 @@
             <column name="user_id">1</column>
         </insert>
     </changeSet>
+    <changeSet id="addMoreUsers" author="Marko">
+        <insert tableName="users">
+            <column name="id">2</column>
+            <column name="username">student1</column>
+            <column name="password">$2a$12$9vwQjoSX6sf1/OcZPIXpueMhpW6lGW21ALQi1XivNMQyMkRuo7Yoy</column>
+            <column name="role">STUDENT</column>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id">3</column>
+            <column name="username">student2</column>
+            <column name="password">$2a$12$9vwQjoSX6sf1/OcZPIXpueMhpW6lGW21ALQi1XivNMQyMkRuo7Yoy</column>
+            <column name="role">STUDENT</column>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id">4</column>
+            <column name="username">student3</column>
+            <column name="password">$2a$12$9vwQjoSX6sf1/OcZPIXpueMhpW6lGW21ALQi1XivNMQyMkRuo7Yoy</column>
+            <column name="role">STUDENT</column>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id">5</column>
+            <column name="username">teacher</column>
+            <column name="password">$2a$12$9vwQjoSX6sf1/OcZPIXpueMhpW6lGW21ALQi1XivNMQyMkRuo7Yoy</column>
+            <column name="role">TEACHER</column>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+        <insert tableName="user_profile">
+            <column name="id">2</column>
+            <column name="first_name">Student</column>
+            <column name="last_name">First</column>
+            <column name="email">student1@studomat.com</column>
+            <column name="address">university</column>
+            <column name="city">rijeka</column>
+            <column name="zip_code">52000</column>
+            <column name="country">croatia</column>
+            <column name="about_me">Life is pain</column>
+            <column name="user_id">2</column>
+        </insert>
+        <insert tableName="user_profile">
+            <column name="id">3</column>
+            <column name="first_name">Student</column>
+            <column name="last_name">Second</column>
+            <column name="email">student2@studomat.com</column>
+            <column name="address">university</column>
+            <column name="city">rijeka</column>
+            <column name="zip_code">52000</column>
+            <column name="country">croatia</column>
+            <column name="about_me">Life is pain</column>
+            <column name="user_id">3</column>
+        </insert>
+        <insert tableName="user_profile">
+            <column name="id">4</column>
+            <column name="first_name">Student</column>
+            <column name="last_name">Third</column>
+            <column name="email">student3@studomat.com</column>
+            <column name="address">university</column>
+            <column name="city">rijeka</column>
+            <column name="zip_code">52000</column>
+            <column name="country">croatia</column>
+            <column name="about_me">Life is pain</column>
+            <column name="user_id">4</column>
+        </insert>
+        <insert tableName="user_profile">
+            <column name="id">5</column>
+            <column name="first_name">Teacher</column>
+            <column name="last_name">Doe</column>
+            <column name="email">teacher@studomat.com</column>
+            <column name="address">university</column>
+            <column name="city">rijeka</column>
+            <column name="zip_code">52000</column>
+            <column name="country">croatia</column>
+            <column name="about_me">I am here to teach you new skills</column>
+            <column name="user_id">5</column>
+        </insert>
+        <insert tableName="subject">
+            <column name="id">1</column>
+            <column name="subject_name">Math</column>
+            <column name="subject_description">Mathematics</column>
+            <column name="subject_ects">5</column>
+            <column name="subject_semester">1</column>
+            <column name="subject_year">1</column>
+            <column name="subject_professor">5</column>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
