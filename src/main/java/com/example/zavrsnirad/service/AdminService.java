@@ -2,6 +2,7 @@ package com.example.zavrsnirad.service;
 
 import com.example.zavrsnirad.dto.response.UserResponseDTO;
 import com.example.zavrsnirad.entity.CostumeErrorException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ public interface AdminService {
 
     UserResponseDTO getUserById(String authorization, Long id) throws CostumeErrorException;
 
+    @Transactional
     String deleteUserById(String authorization, Long id) throws CostumeErrorException;
 
     String disableUserById(String authorization, Long id) throws CostumeErrorException;

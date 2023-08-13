@@ -47,9 +47,15 @@ public class User implements UserDetails {
             nullable = false
     )
     private Boolean enabled;
-    @OneToOne(mappedBy = "user")
+    @OneToOne(
+            mappedBy = "user",
+            cascade = CascadeType.ALL
+    )
     private UserProfile userProfile;
-    @ManyToMany(mappedBy = "students")
+    @ManyToMany(
+            mappedBy = "students",
+            cascade = CascadeType.DETACH
+    )
     private List<Subject> subjects;
 
     public User(String username, String password, Role role, boolean enabled) {

@@ -29,17 +29,20 @@ public class Subject {
     private Integer subjectSemester;
     @Column(name = "subject_year")
     private Integer subjectYear;
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "subject_professor")
     private User subjectProfessor;
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "user_subject",
             joinColumns = @JoinColumn(name = "subject_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> students;
-    @OneToMany(mappedBy = "subject")
+    @OneToMany(
+            mappedBy = "subject",
+            cascade = CascadeType.ALL
+    )
     private List<Test> tests;
 
 }

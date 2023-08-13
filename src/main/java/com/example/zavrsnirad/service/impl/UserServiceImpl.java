@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 // Ova klasa predstavlja servis korisnika koji se koristi za pozivanje metoda iz repozitorija te za logiku aplikacije
 @Service
@@ -72,9 +73,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public String deleteUserById(Long id) throws CostumeErrorException {
         User user = userGetService.getUserById(id);
 
+        userRepository.deleteConnections(user.getId());
         userRepository.delete(user);
 
         return "User deleted";

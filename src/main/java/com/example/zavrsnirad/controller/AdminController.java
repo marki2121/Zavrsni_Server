@@ -4,6 +4,7 @@ import com.example.zavrsnirad.dto.response.UserResponseDTO;
 import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.service.AdminService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getUserById(Authorization, id));
     }
 
+    @Transactional
     @DeleteMapping("/user/{id}")
     public ResponseEntity<String> deleteUserById(@RequestHeader String Authorization, @PathVariable Long id) throws CostumeErrorException {
         return ResponseEntity.ok(adminService.deleteUserById(Authorization, id));

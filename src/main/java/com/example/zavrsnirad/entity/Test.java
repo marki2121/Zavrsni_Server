@@ -27,6 +27,9 @@ public class Test {
     private Date testDate;
     @Column(name = "test_note")
     private String testNote;
-    @OneToMany(mappedBy = "test")
+    @OneToMany(
+            mappedBy = "test",
+            cascade = CascadeType.ALL
+    )
     private List<TestApplication> testApplication;
 }

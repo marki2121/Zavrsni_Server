@@ -6,6 +6,7 @@ import com.example.zavrsnirad.dto.request.UserDTO;
 import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.service.SubjectService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,13 +37,12 @@ public class SubjectController {
         return ResponseEntity.ok(subjectService.getSubjectTeacher(Authorization, id));
     }
 
-    // -
+    @Transactional
     @DeleteMapping("/teacher/{id}")
     public ResponseEntity<String> deleteSubject(@RequestHeader String Authorization, @PathVariable Long id) throws CostumeErrorException {
         return ResponseEntity.ok(subjectService.deleteSubject(Authorization, id));
     }
 
-    // -
     @PutMapping("/teacher/{id}/update")
     public ResponseEntity<String> updateSubject(@RequestHeader String Authorization, @PathVariable Long id, @RequestBody SubjectCreateDTO data) throws CostumeErrorException {
         return ResponseEntity.ok(subjectService.updateSubject(Authorization, id, data));

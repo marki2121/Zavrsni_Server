@@ -4,6 +4,7 @@ import com.example.zavrsnirad.dto.request.SubjectCreateDTO;
 import com.example.zavrsnirad.dto.request.SubjectDTO;
 import com.example.zavrsnirad.dto.request.UserDTO;
 import com.example.zavrsnirad.entity.CostumeErrorException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public interface SubjectService {
 
     SubjectDTO getSubjectTeacher(String authorization, Long id) throws CostumeErrorException;
 
+    @Transactional
     String deleteSubject(String authorization, Long id) throws CostumeErrorException;
 
     String updateSubject(String authorization, Long id, SubjectCreateDTO data) throws CostumeErrorException;

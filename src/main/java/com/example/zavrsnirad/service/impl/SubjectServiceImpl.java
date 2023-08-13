@@ -16,6 +16,7 @@ import com.example.zavrsnirad.service.TestService;
 import com.example.zavrsnirad.service.UserGetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -65,9 +66,11 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
+    @Transactional
     public String deleteSubject(String authorization, Long id) throws CostumeErrorException {
         Subject subject = subjectGetService.getTeacherSubjectById(authorization, id);
 
+        subjectRepository.deleteUserLink(subject.getId());
         subject.getTests().forEach((t) -> {
             try {
                 testService.deleteTest(authorization, t.getId());
@@ -84,19 +87,19 @@ public class SubjectServiceImpl implements SubjectService {
     public String updateSubject(String authorization, Long id, SubjectCreateDTO data) throws CostumeErrorException {
         Subject subject = subjectGetService.getTeacherSubjectById(authorization, id);
 
-        if(data.name() != null || !Objects.equals(data.name(), subject.getSubjectName())) {
+        if(data.name() != null && !data.name().trim().isEmpty() && !Objects.equals(data.name(), subject.getSubjectName())) {
             subject.setSubjectName(data.name());
         }
-        if(data.description() != null || !Objects.equals(data.description(), subject.getSubjectDescription())) {
+        if(data.description() != null && !data.description().trim().isEmpty() && !Objects.equals(data.description(), subject.getSubjectDescription())) {
             subject.setSubjectDescription(data.description());
         }
-        if(data.semester() != null || !Objects.equals(data.semester(), subject.getSubjectSemester())) {
+        if(data.semester() != null && !Objects.equals(data.semester(), subject.getSubjectSemester())) {
             subject.setSubjectSemester(data.semester());
         }
-        if(data.year() != null || !Objects.equals(data.year(), subject.getSubjectYear())) {
+        if(data.year() != null && !Objects.equals(data.year(), subject.getSubjectYear())) {
             subject.setSubjectYear(data.year());
         }
-        if(data.ects() != null || !Objects.equals(data.ects(), subject.getSubjectEcts())) {
+        if(data.ects() != null && !Objects.equals(data.ects(), subject.getSubjectEcts())) {
             subject.setSubjectEcts(data.ects());
         }
 
