@@ -4,7 +4,10 @@ import com.example.zavrsnirad.appenum.Role;
 import com.example.zavrsnirad.dto.response.UserResponseDTO;
 import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.mapper.UserResponseDtoMapper;
-import com.example.zavrsnirad.service.*;
+import com.example.zavrsnirad.service.AdminService;
+import com.example.zavrsnirad.service.TestApplicationService;
+import com.example.zavrsnirad.service.UserGetService;
+import com.example.zavrsnirad.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +17,13 @@ import java.util.List;
 public class AdminServiceImpl implements AdminService {
     private final UserService userService;
     private final UserGetService userGetService;
-    private final SubjectService subjectService;
     private final TestApplicationService testApplicationService;
-    private final UserProfileService userProfileService;
     private final UserResponseDtoMapper userResponseDtoMapper;
 
-    public AdminServiceImpl(UserService userService, UserGetService userGetService, SubjectService subjectService, TestApplicationService testApplicationService, UserProfileService userProfileService, UserResponseDtoMapper userResponseDtoMapper) {
+    public AdminServiceImpl(UserService userService, UserGetService userGetService, TestApplicationService testApplicationService, UserResponseDtoMapper userResponseDtoMapper) {
         this.userService = userService;
         this.userGetService = userGetService;
-        this.subjectService = subjectService;
         this.testApplicationService = testApplicationService;
-        this.userProfileService = userProfileService;
         this.userResponseDtoMapper = userResponseDtoMapper;
     }
 
