@@ -1,7 +1,7 @@
 package com.example.zavrsnirad.controller;
 
+import com.example.zavrsnirad.config.CostumeErrorException;
 import com.example.zavrsnirad.dto.response.UserResponseDTO;
-import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.service.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;

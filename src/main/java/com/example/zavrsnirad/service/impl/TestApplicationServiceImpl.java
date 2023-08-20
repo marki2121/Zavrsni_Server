@@ -1,8 +1,12 @@
 package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
+import com.example.zavrsnirad.config.CostumeErrorException;
 import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
-import com.example.zavrsnirad.entity.*;
+import com.example.zavrsnirad.entity.Subject;
+import com.example.zavrsnirad.entity.Test;
+import com.example.zavrsnirad.entity.TestApplication;
+import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.TestApplicationResponseDtoMapper;
 import com.example.zavrsnirad.repository.TestApplicationRepository;
 import com.example.zavrsnirad.service.TestApplicationService;

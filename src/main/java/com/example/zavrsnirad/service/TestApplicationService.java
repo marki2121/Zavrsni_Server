@@ -1,7 +1,7 @@
 package com.example.zavrsnirad.service;
 
+import com.example.zavrsnirad.config.CostumeErrorException;
 import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
-import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.entity.Subject;
 import com.example.zavrsnirad.entity.TestApplication;
 import com.example.zavrsnirad.entity.User;

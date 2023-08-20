@@ -1,6 +1,6 @@
 package com.example.zavrsnirad.controller;
 
-import com.example.zavrsnirad.entity.CostumeErrorException;
+import com.example.zavrsnirad.config.CostumeErrorException;
 import com.example.zavrsnirad.service.FileService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;

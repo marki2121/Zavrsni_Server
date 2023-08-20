@@ -1,8 +1,8 @@
 package com.example.zavrsnirad.service.impl;
 
 import com.example.zavrsnirad.appenum.Role;
+import com.example.zavrsnirad.config.CostumeErrorException;
 import com.example.zavrsnirad.dto.request.SignupDTO;
-import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.entity.UserProfile;
 import com.example.zavrsnirad.mapper.SignupDtoMapper;

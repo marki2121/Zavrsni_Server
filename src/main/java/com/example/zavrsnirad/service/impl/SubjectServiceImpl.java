@@ -1,9 +1,9 @@
 package com.example.zavrsnirad.service.impl;
 
+import com.example.zavrsnirad.config.CostumeErrorException;
 import com.example.zavrsnirad.dto.request.SubjectCreateDTO;
 import com.example.zavrsnirad.dto.request.SubjectDTO;
 import com.example.zavrsnirad.dto.request.UserDTO;
-import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.entity.Subject;
 import com.example.zavrsnirad.entity.User;
 import com.example.zavrsnirad.mapper.SubjectCreateDtoMapper;

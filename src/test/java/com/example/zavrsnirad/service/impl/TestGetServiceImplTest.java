@@ -1,6 +1,6 @@
 package com.example.zavrsnirad.service.impl;
 
-import com.example.zavrsnirad.entity.CostumeErrorException;
+import com.example.zavrsnirad.config.CostumeErrorException;
 import com.example.zavrsnirad.repository.TestRepository;
 import com.example.zavrsnirad.service.TestGetService;
 import com.example.zavrsnirad.service.UserGetService;

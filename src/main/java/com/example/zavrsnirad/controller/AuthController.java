@@ -1,7 +1,7 @@
 package com.example.zavrsnirad.controller;
 
+import com.example.zavrsnirad.config.CostumeErrorException;
 import com.example.zavrsnirad.dto.request.SignupDTO;
-import com.example.zavrsnirad.entity.CostumeErrorException;
 import com.example.zavrsnirad.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

@@ -1,6 +1,6 @@
 package com.example.zavrsnirad.service;
 
-import com.example.zavrsnirad.entity.CostumeErrorException;
+import com.example.zavrsnirad.config.CostumeErrorException;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 

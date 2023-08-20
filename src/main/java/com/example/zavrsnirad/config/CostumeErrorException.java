@@ -1,4 +1,4 @@
-package com.example.zavrsnirad.entity;
+package com.example.zavrsnirad.config;
 
 import lombok.Getter;
 import lombok.Setter;

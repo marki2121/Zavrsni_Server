@@ -1,9 +1,9 @@
 package com.example.zavrsnirad.service;
 
+import com.example.zavrsnirad.config.CostumeErrorException;
 import com.example.zavrsnirad.dto.request.TestCreateDTO;
 import com.example.zavrsnirad.dto.response.TestApplicationResponseDTO;
 import com.example.zavrsnirad.dto.response.TestResponseDTO;
-import com.example.zavrsnirad.entity.CostumeErrorException;
 
 import java.text.ParseException;
 import java.util.List;
