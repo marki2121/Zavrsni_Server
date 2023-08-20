@@ -35,32 +35,23 @@ class UserProfileServiceImplTest {
     @Test
     @DisplayName("getSelf() - success")
     void getSelf() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken("token")).thenReturn(UserUtil.generate());
         when(userDtoMapper.apply(any())).thenReturn(UserDtoUtils.generate());
-
-        //then
         assertEquals(userProfileService.getSelf("token").id(), UserUtil.generate().getId());
     }
 
     @Test
     @DisplayName("updateSelfProfile() - success")
     void updateSelfProfile() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken("token")).thenReturn(UserUtil.generate());
         when(userRepository.save(any())).thenReturn(UserProfileUtil.generate());
-
-        //then
         assertDoesNotThrow(() -> userProfileService.updateSelfProfile("token", UpdateProfileDTOUtil.generate()));
     }
 
     @Test
     @DisplayName("saveProfile() - success")
     void saveProfile() {
-        //when
         when(userRepository.save(any())).thenReturn(UserProfileUtil.generate());
-
-        //then
         assertDoesNotThrow(() -> userProfileService.saveProfile(UserProfileUtil.generate()));
     }
 }

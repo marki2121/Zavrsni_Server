@@ -40,20 +40,25 @@ public class SecurityConfig {
         return http
                 .cors()
                 .and()
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Allow all requests to /api/auth/**
-                        .requestMatchers("/api/file/download/**").permitAll() // Allow all requests to /api/file/download/**
-                        .requestMatchers("/api/subject/teacher/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_TEACHER") // Only admin and teacher allowed
-                        .requestMatchers("/api/test/teacher/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_TEACHER") // Only admin and teacher allowed
-                        .requestMatchers("/api/admin/**").hasAuthority("SCOPE_ADMIN") // Only admin allowed
-                        .anyRequest().authenticated() // Require authentication for all other requests
+                        .requestMatchers("/api/auth/**")
+                        .permitAll()
+                        .requestMatchers("/api/file/download/**")
+                        .permitAll()
+                        .requestMatchers("/api/subject/teacher/**")
+                        .hasAnyAuthority("SCOPE_ADMIN", "SCOPE_TEACHER")
+                        .requestMatchers("/api/test/teacher/**")
+                        .hasAnyAuthority("SCOPE_ADMIN", "SCOPE_TEACHER")
+                        .requestMatchers("/api/admin/**")
+                        .hasAuthority("SCOPE_ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Disable session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt) // Enable JWT
-                .httpBasic(Customizer.withDefaults()) // Enable basic authentication
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 

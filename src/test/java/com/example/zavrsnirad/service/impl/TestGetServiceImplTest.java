@@ -28,11 +28,8 @@ class TestGetServiceImplTest {
 
     @Test
     void getTestForUser() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken("token")).thenReturn(UserUtil.generate());
         when(testRepository.findById(1L)).thenReturn(Optional.of(TestUtil.generate()));
-
-        //then
         assertDoesNotThrow(() -> testGetService.getTestForUser("token", 1L));
     }
 }

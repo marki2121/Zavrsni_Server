@@ -35,24 +35,18 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with user admin")
     void applyForTest() throws Exception {
-        //when
         when(testApplicationService.applyForTest(null, 1L)).thenReturn("Ok");
-
-        //then
         mockMvc.perform(post("/api/application/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
-                            .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
-                            .header("Authorization", ""))
+                                .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
+                        .header("Authorization", ""))
                 .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Test applyForTest() method with user teacher")
     void applyForTestTeacher() throws Exception {
-        //when
         when(testApplicationService.applyForTest(null, 1L)).thenReturn("Ok");
-
-        //then
         mockMvc.perform(post("/api/application/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_TEACHER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "teacher")))
@@ -63,10 +57,7 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with user user")
     void applyForTestUser() throws Exception {
-        //when
         when(testApplicationService.applyForTest(null, 1L)).thenReturn("Ok");
-
-        //then
         mockMvc.perform(post("/api/application/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_USER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "user")))
@@ -77,10 +68,7 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with no credentials")
     void applyForTestnoCreds() throws Exception {
-        //when
         when(testApplicationService.applyForTest(null, 1L)).thenReturn("Ok");
-
-        //then
         mockMvc.perform(post("/api/application/1")
                         .header("Authorization", ""))
                 .andExpect(status().isUnauthorized());
@@ -89,10 +77,7 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with user admin")
     void getAllApplications() throws Exception {
-        //when
         when(testApplicationService.getAllApplications(any())).thenReturn(List.of(TestApplicationResponseDtoUtil.generate()));
-
-        //then
         mockMvc.perform(get("/api/application/all")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
@@ -103,10 +88,7 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with user teacher")
     void getAllApplicationsTeacher() throws Exception {
-        //when
         when(testApplicationService.getAllApplications(any())).thenReturn(List.of(TestApplicationResponseDtoUtil.generate()));
-
-        //then
         mockMvc.perform(get("/api/application/all")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_TEACHER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "teacher")))
@@ -117,10 +99,7 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with user")
     void getAllApplicationsUser() throws Exception {
-        //when
         when(testApplicationService.getAllApplications(any())).thenReturn(List.of(TestApplicationResponseDtoUtil.generate()));
-
-        //then
         mockMvc.perform(get("/api/application/all")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_USER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "user")))
@@ -131,10 +110,7 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with no credentials")
     void getAllApplicationsNoCreds() throws Exception {
-        //when
         when(testApplicationService.getAllApplications(any())).thenReturn(List.of(TestApplicationResponseDtoUtil.generate()));
-
-        //then
         mockMvc.perform(get("/api/application/all")
                         .header("Authorization", ""))
                 .andExpect(status().isUnauthorized());
@@ -143,10 +119,7 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with user admin")
     void deleteApplication() throws Exception {
-        //when
         when(testApplicationService.deleteApplication(null, 1L)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(delete("/api/application/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
@@ -157,10 +130,7 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with user teacher")
     void deleteApplicationTeacher() throws Exception {
-        //when
         when(testApplicationService.deleteApplication(null, 1L)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(delete("/api/application/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_TEACHER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "teacher")))
@@ -171,10 +141,7 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with user")
     void deleteApplicationUser() throws Exception {
-        //when
         when(testApplicationService.deleteApplication(null, 1L)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(delete("/api/application/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_USER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "user")))
@@ -185,10 +152,7 @@ class TestApplicationControllerTest {
     @Test
     @DisplayName("Test applyForTest() method with no credentials")
     void deleteApplicationNoCreds() throws Exception {
-        //when
         when(testApplicationService.deleteApplication(null, 1L)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(delete("/api/application/1")
                         .header("Authorization", ""))
                 .andExpect(status().isUnauthorized());

@@ -19,15 +19,11 @@ public class AuthController {
         this.userService = userService;
     }
 
-
-    // Endpoint za prijavu postojećeg korisnika
     @GetMapping("/login")
     public ResponseEntity<String> login(Authentication authentication) {
         return ResponseEntity.ok(userService.login(authentication));
     }
 
-
-    // Endpoint za registraciju novog korisnika
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@Validated @RequestBody SignupDTO data) throws CostumeErrorException {
         return ResponseEntity.ok(userService.signup(data));

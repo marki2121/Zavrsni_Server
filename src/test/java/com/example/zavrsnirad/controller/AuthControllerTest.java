@@ -41,35 +41,25 @@ class AuthControllerTest {
     @Test
     @DisplayName("Test login endpoint with valid credentials")
     public void loginTestValid() throws Exception {
-        // when
         when(userService.login(Mockito.any(Authentication.class))).thenReturn("token");
-
-        // then
         mockMvc.perform(get("/api/auth/login")
-                .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
-                        .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin"))))
+                        .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
+                                .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin"))))
                 .andExpect(status().isOk());
-
-        // verify
         verify(userService).login(Mockito.any(Authentication.class));
     }
 
     @Test
     @DisplayName("Test signup endpoint with valid request")
     void signupTestValidRequest() throws Exception {
-        //given
         SignupDTO signupDTO = new SignupDTO("admin", "iloveyou", "iloveyou");
         ObjectMapper objectMapper = new ObjectMapper();
-
-        //when
         when(userService.signup(Mockito.any(SignupDTO.class))).thenReturn("User created");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(signupDTO)))
-                    .andExpect(status().isOk());
+                .andExpect(status().isOk());
     }
 }
 

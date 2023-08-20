@@ -35,47 +35,33 @@ class SubjectGetServiceImplTest {
     @Test
     @DisplayName("Test getTeacherSubjectById - success")
     void getTeacherSubjectById() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken(any())).thenReturn(UserUtil.generateTeacher());
         when(subjectRepository.findById(any())).thenReturn(Optional.of(SubjectUtil.generate()));
-
-        //then
         assertDoesNotThrow(() -> subjectGetService.getTeacherSubjectById("token", 1L));
     }
 
     @Test
     @DisplayName("Test checkIfUserTeacher - success")
     void checkIfUserTeacher() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken(any())).thenReturn(UserUtil.generateTeacher());
-
-        //then
         assertDoesNotThrow(() -> subjectGetService.checkIfUserTeacher("token"));
     }
 
     @Test
     @DisplayName("Test checkIfUserTeacher - fail user is student")
     void checkIfUserTeacherFail() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken(any())).thenReturn(UserUtil.generate());
-
-        //then
         assertThrows(CostumeErrorException.class, () -> subjectGetService.checkIfUserTeacher("token"));
     }
 
     @Test
     @DisplayName("Test getSubjectById - success")
     void getSubjectById() throws CostumeErrorException {
-        //given
         User user = UserUtil.generate();
         Subject subject = SubjectUtil.generate();
         subject.setStudents(List.of(user));
-
-        //when
         when(userGetService.getUserFromToken(any())).thenReturn(user);
         when(subjectRepository.findById(any())).thenReturn(Optional.of(subject));
-
-        //then
         assertDoesNotThrow(() -> subjectGetService.getSubjectById("token", 1L));
     }
 }

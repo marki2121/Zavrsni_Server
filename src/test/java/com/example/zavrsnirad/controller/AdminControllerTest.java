@@ -35,13 +35,10 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test getAllusers endpoint with valid credentials admin")
     void getAllUsersValid() throws Exception {
-        //when
         when(adminService.getAllUsers(null)).thenReturn(List.of());
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/admin/user/all")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
-                        .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
+                                .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
                         .header("Authorization", ""))
                 .andExpect(status().isOk());
     }
@@ -77,10 +74,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test getUserById endpoint with valid credentials admin")
     void getUserById() throws Exception {
-        //when
         when(adminService.getUserById(null, 1L)).thenReturn(UserResponseDtoUtil.generateUserResponseDto());
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/admin/user/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
@@ -91,10 +85,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test getUserById endpoint with valid credentials teacher")
     void getUserByIdTeacher() throws Exception {
-        //when
         when(adminService.getUserById(null, 1L)).thenReturn(UserResponseDtoUtil.generateUserResponseDto());
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/admin/user/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_TEACHER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "teacher")))
@@ -105,10 +96,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test getUserById endpoint with valid credentials admin")
     void getUserByIdUser() throws Exception {
-        //when
         when(adminService.getUserById(null, 1L)).thenReturn(UserResponseDtoUtil.generateUserResponseDto());
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/admin/user/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_USER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "user")))
@@ -119,10 +107,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test getUserById endpoint no creadentials")
     void getUserByIdNoCreds() throws Exception {
-        //when
         when(adminService.getUserById(null, 1L)).thenReturn(UserResponseDtoUtil.generateUserResponseDto());
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/admin/user/1")
                         .header("Authorization", ""))
                 .andExpect(status().isUnauthorized());
@@ -131,10 +116,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test deleteUserById endpoint with valid credentials admin")
     void deleteUserById() throws Exception {
-        //given
         when(adminService.deleteUserById(null, null)).thenReturn("Deleted");
-
-        //when
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/admin/user/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
@@ -145,10 +127,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test deleteUserById endpoint with valid credentials teacher")
     void deleteUserByIdTeacher() throws Exception {
-        //given
         when(adminService.deleteUserById(null, null)).thenReturn("Deleted");
-
-        //when
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/admin/user/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_TEACHER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "teacher")))
@@ -159,10 +138,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test deleteUserById endpoint with valid credentials user")
     void deleteUserByIdUser() throws Exception {
-        //given
         when(adminService.deleteUserById(null, null)).thenReturn("Deleted");
-
-        //when
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/admin/user/1")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_USER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "user")))
@@ -173,10 +149,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test deleteUserById endpoint with no creds")
     void deleteUserByIdNoCreads() throws Exception {
-        //given
         when(adminService.deleteUserById(null, null)).thenReturn("Deleted");
-
-        //when
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/admin/user/1")
                         .header("Authorization", ""))
                 .andExpect(status().isUnauthorized());
@@ -185,10 +158,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test disableUserById endpoint with valid credentials admin")
     void disableUserById() throws Exception {
-        //when
         when(adminService.disableUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/disable")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
@@ -199,10 +169,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test disableUserById endpoint with valid credentials teacher")
     void disableUserByIdTeacher() throws Exception {
-        //when
         when(adminService.disableUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/disable")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_TEACHER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "teacher")))
@@ -213,10 +180,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test disableUserById endpoint with valid credentials user")
     void disableUserByIdUser() throws Exception {
-        //when
         when(adminService.disableUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/disable")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_USER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "user")))
@@ -227,10 +191,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test disableUserById endpoint with no creds")
     void disableUserByIdNoCreads() throws Exception {
-        //when
         when(adminService.disableUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/disable")
                         .header("Authorization", ""))
                 .andExpect(status().isUnauthorized());
@@ -239,10 +200,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test enableUserById endpoint with valid credentials admin")
     void enableUserById() throws Exception {
-        //when
         when(adminService.enableUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/enable")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
@@ -253,10 +211,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test enableUserById endpoint with valid credentials teacher")
     void enableUserByIdTeacher() throws Exception {
-        //when
         when(adminService.enableUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/enable")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_TEACHER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "teacher")))
@@ -267,10 +222,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test enableUserById endpoint with valid credentials user")
     void enableUserByIdUser() throws Exception {
-        //when
         when(adminService.enableUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/enable")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_USER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "user")))
@@ -281,10 +233,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test enableUserById endpoint with no creds")
     void enableUserByIdNoCreads() throws Exception {
-        //when
         when(adminService.enableUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/enable")
                         .header("Authorization", ""))
                 .andExpect(status().isUnauthorized());
@@ -293,10 +242,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test promoteUserById endpoint with valid credentials admin")
     void promoteUserById() throws Exception {
-        //when
         when(adminService.promoteUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/promote")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
@@ -307,10 +253,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test promoteUserById endpoint with valid credentials teacher")
     void promoteUserByIdTeacher() throws Exception {
-        //when
         when(adminService.promoteUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/promote")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_TEACHER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "teacher")))
@@ -321,10 +264,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test promoteUserById endpoint with valid credentials user")
     void promoteUserByIdUser() throws Exception {
-        //when
         when(adminService.promoteUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/promote")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_USER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "user")))
@@ -335,10 +275,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test promoteUserById endpoint with no creds")
     void promoteUserByIdNoCreds() throws Exception {
-        //when
         when(adminService.promoteUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/promote")
                         .header("Authorization", ""))
                 .andExpect(status().isUnauthorized());
@@ -347,10 +284,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test demoteUserById endpoint with valid credentials admin")
     void demoteUserById() throws Exception {
-        //when
         when(adminService.demoteUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/demote")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
@@ -361,10 +295,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test demoteUserById endpoint with valid credentials teacher")
     void demoteUserByIdTeacher() throws Exception {
-        //when
         when(adminService.demoteUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/demote")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_TEACHER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "teacher")))
@@ -375,10 +306,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test demoteUserById endpoint with valid credentials user")
     void demoteUserByIdUser() throws Exception {
-        //when
         when(adminService.demoteUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/demote")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_USER")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "user")))
@@ -389,10 +317,7 @@ class AdminControllerTest {
     @Test
     @DisplayName("Test demoteUserById endpoint with no creds")
     void demoteUserByIdNoCreds() throws Exception {
-        //when
         when(adminService.demoteUserById(null, null)).thenReturn("Deleted");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/admin/user/1/demote")
                         .header("Authorization", ""))
                 .andExpect(status().isUnauthorized());

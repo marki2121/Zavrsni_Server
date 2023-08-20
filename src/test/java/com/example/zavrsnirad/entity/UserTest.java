@@ -28,18 +28,14 @@ class UserTest {
     @Test
     @DisplayName("User is enabled false")
     void testIsEnabledFalse() {
-        // given
         User user = new User();
         user.setEnabled(false);
-
-        // assert
         assertFalse(user.isEnabled());
     }
 
     @Test
     @DisplayName("Test User constructor")
     void testConstructor() {
-        // given
         User actualUser = new User();
         actualUser.setEnabled(true);
         actualUser.setId(1L);
@@ -48,8 +44,6 @@ class UserTest {
         UserProfile userProfile = new UserProfile();
         actualUser.setUserProfile(userProfile);
         actualUser.setUsername("janedoe");
-
-        // assert
         assertTrue(actualUser.getEnabled());
         assertEquals(1L, actualUser.getId().longValue());
         assertEquals("iloveyou", actualUser.getPassword());
@@ -64,11 +58,8 @@ class UserTest {
     @Test
     @DisplayName("Test User constructor 2")
     void testConstructor2() {
-        // given
         UserProfile userProfile = new UserProfile();
         User actualUser = new User(1L, "janedoe", "iloveyou", Role.ADMIN, true, userProfile, List.of());
-
-        // assert
         assertEquals(1L, actualUser.getId().longValue());
         assertEquals("iloveyou", actualUser.getPassword());
         assertEquals(Role.ADMIN, actualUser.getRole());

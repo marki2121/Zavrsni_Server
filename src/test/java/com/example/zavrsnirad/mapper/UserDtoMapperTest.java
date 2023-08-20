@@ -24,7 +24,6 @@ class UserDtoMapperTest {
     @Test
     @DisplayName("Test apply")
     void testApply() {
-        //when
         UserProfile userProfile = mock(UserProfile.class);
         when(userProfile.getAboutMe()).thenReturn("About Me");
         when(userProfile.getAddress()).thenReturn("42 Main St");
@@ -40,7 +39,6 @@ class UserDtoMapperTest {
         user.setRole(Role.ADMIN);
         user.setUserProfile(userProfile);
         UserDTO actualApplyResult = userDtoMapper.apply(user);
-        //then
         assertEquals("About Me", actualApplyResult.about());
         assertEquals("21654", actualApplyResult.zipCode());
         assertNull(actualApplyResult.username());
@@ -52,7 +50,6 @@ class UserDtoMapperTest {
         assertEquals("GB", actualApplyResult.country());
         assertEquals("Oxford", actualApplyResult.city());
         assertEquals("42 Main St", actualApplyResult.address());
-        //veifty
         verify(userProfile).getAboutMe();
         verify(userProfile).getAddress();
         verify(userProfile).getCity();

@@ -19,7 +19,7 @@ services:
     restart: on-failure
     image: marki2121/zavrsni-backend:1.7
     environment:
-      SPRING_APPLICATION_JSON: '{
+      SPRING_APPLICATION_JSON: '{ 
         "spring.datasource.url": "jdbc:mysql://db:3306/zavrsni?useSSL=false"
       }'
     ports:

@@ -21,7 +21,6 @@ public class SubjectController {
         this.subjectService = subjectService;
     }
 
-    //Teacher endpoints
     @PostMapping("/teacher/create")
     public ResponseEntity<String> createSubject(@RequestHeader String Authorization, @RequestBody SubjectCreateDTO data) throws CostumeErrorException {
         return ResponseEntity.ok(subjectService.createSubject(Authorization, data));
@@ -63,7 +62,6 @@ public class SubjectController {
         return ResponseEntity.ok(subjectService.getStudentsFromSubject(Authorization, id));
     }
 
-    //Student endpoints
     @GetMapping("/{id}")
     public ResponseEntity<SubjectDTO> getSubject(@RequestHeader String Authorization, @PathVariable Long id) throws CostumeErrorException {
         return ResponseEntity.ok(subjectService.getSubject(Authorization, id));

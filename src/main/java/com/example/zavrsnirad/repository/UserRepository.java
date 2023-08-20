@@ -11,10 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-// Ova klasa predstavlja repozitorij korisnika koji se koristi za pristup podacima u bazi podataka (CRUD operacije)
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    // Metoda koja pronalazi korisnika po username-u
     Optional<User> findByUsername(String username);
 
     List<User> findAllByUsernameContaining(String username);

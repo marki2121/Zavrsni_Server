@@ -19,10 +19,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// Ova klasa predstavlja servis korisnika koji se koristi za pozivanje metoda iz repozitorija te za logiku aplikacije
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
-    // Injektiranje repozitorija
     private final UserRepository userRepository;
     private final UserGetService userGetService;
     private final UserProfileService userProfileService;
@@ -37,32 +35,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.tokenService = tokenService;
     }
 
-    // Metoda koja se koristi za dohvaćanje korisnika iz baze podataka prema njegovom username-u
-    // Testirano
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    // Testirano
     @Override
     public String login(Authentication authentication) {
-        return tokenService.generateToken(authentication); // generiranje tokena
+        return tokenService.generateToken(authentication);
     }
 
-    // Testirano
     @Override
     public String signup(SignupDTO data) throws CostumeErrorException {
-        if(data.password().equals(data.passwordConfirmation())) { // provjera da li se lozinke podudaraju
-            if(userRepository.findByUsername(data.username()).isEmpty()) { // provjera da li korisnik već postoji
-                User user = signupDtoMapper.apply(data); // mapiranje podataka iz DTO-a u entitet (User)
+        if (data.password().equals(data.passwordConfirmation())) {
+            if (userRepository.findByUsername(data.username()).isEmpty()) {
+                User user = signupDtoMapper.apply(data);
                 UserProfile userProfile = new UserProfile();
 
                 userRepository.save(user);
 
                 userProfile.setUser(user);
 
-                userProfileService.saveProfile(userProfile); // spremanje korisničkog profila (UserProfile
+                userProfileService.saveProfile(userProfile);
 
                 return "User created";
             }
@@ -109,16 +104,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public String promoteUserById(Long id) throws CostumeErrorException {
         User user = userGetService.getUserById(id);
 
-        if(user.getRole().equals(Role.ADMIN)) {
+        if (user.getRole().equals(Role.ADMIN)) {
             throw new CostumeErrorException("User is already admin", HttpStatus.BAD_REQUEST);
         }
 
-        if(user.getRole().equals(Role.TEACHER)) {
+        if (user.getRole().equals(Role.TEACHER)) {
             user.setRole(Role.ADMIN);
             userRepository.save(user);
         }
 
-        if(user.getRole().equals(Role.STUDENT)) {
+        if (user.getRole().equals(Role.STUDENT)) {
             user.setRole(Role.TEACHER);
             userRepository.save(user);
         }
@@ -130,20 +125,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public String demoteUserById(Long id) throws CostumeErrorException {
         User user = userGetService.getUserById(id);
 
-        if(checkIfUserIsOnlyAdmin() && user.getRole().equals(Role.ADMIN)) {
+        if (checkIfUserIsOnlyAdmin() && user.getRole().equals(Role.ADMIN)) {
             throw new CostumeErrorException("User is only admin", HttpStatus.BAD_REQUEST);
         }
 
-        if(user.getRole().equals(Role.STUDENT)) {
+        if (user.getRole().equals(Role.STUDENT)) {
             throw new CostumeErrorException("User is already student", HttpStatus.BAD_REQUEST);
         }
 
-        if(user.getRole().equals(Role.TEACHER)) {
+        if (user.getRole().equals(Role.TEACHER)) {
             user.setRole(Role.STUDENT);
             userRepository.save(user);
         }
 
-        if(user.getRole().equals(Role.ADMIN)) {
+        if (user.getRole().equals(Role.ADMIN)) {
             user.setRole(Role.TEACHER);
             userRepository.save(user);
         }

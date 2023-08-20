@@ -35,10 +35,7 @@ class UserGetServiceImplTest {
     @Test
     @DisplayName("getUserById() - success")
     void getUserById() throws CostumeErrorException {
-        //when
         when(userRepository.findById(1L)).thenReturn(Optional.of(UserUtil.generate()));
-
-        //then
         assertEquals(userGetService.getUserById(1L).getId(), UserUtil.generate().getId());
         assertDoesNotThrow(() -> userGetService.getUserById(1L));
     }
@@ -46,31 +43,22 @@ class UserGetServiceImplTest {
     @Test
     @DisplayName("getUserById() - fail - no user with given id")
     void getUserByIdFail() throws CostumeErrorException {
-        //when
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
-
-        //then
         assertThrows(CostumeErrorException.class, () -> userGetService.getUserById(1L));
     }
 
     @Test
     @DisplayName("findAllUsers() - success")
     void findAllUsers() {
-        //when
         when(userRepository.findAll()).thenReturn(UserUtil.generateList());
-
-        //then
         assertEquals(userGetService.findAllUsers().size(), UserUtil.generateList().size());
     }
 
     @Test
     @DisplayName("getUserFromToken() - success")
     void getUserFromToken() throws CostumeErrorException {
-        //when
         when(userRepository.findByUsername("username")).thenReturn(Optional.of(UserUtil.generate()));
         when(tokenService.getUsernameFromToken("token")).thenReturn("username");
-
-        //then
         assertDoesNotThrow(() -> userGetService.getUserFromToken("token"));
         assertEquals(userGetService.getUserFromToken("token").getId(), UserUtil.generate().getId());
     }
@@ -78,22 +66,16 @@ class UserGetServiceImplTest {
     @Test
     @DisplayName("getUserFromToken() - fail - no user with given username")
     void getUserFromTokenFail() throws CostumeErrorException {
-        //when
         when(userRepository.findByUsername("username")).thenReturn(Optional.empty());
         when(tokenService.getUsernameFromToken("token")).thenReturn("username");
-
-        //then
         assertThrows(CostumeErrorException.class, () -> userGetService.getUserFromToken("token"));
     }
 
     @Test
     @DisplayName("getUsersByUsername() - success")
     void getUsersByUsername() {
-        //when
         when(userRepository.findAllByUsernameContaining("username")).thenReturn(UserUtil.generateList());
         when(userDtoMapper.map(any(List.class))).thenReturn(UserDtoUtils.generateList());
-
-        //then
         assertEquals(userGetService.getUsersByUsername("username").size(), UserUtil.generateList().size());
     }
 }

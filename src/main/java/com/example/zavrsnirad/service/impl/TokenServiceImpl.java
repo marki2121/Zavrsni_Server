@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
-// Ova klasa predstavlja servis tokena koji se koristi za generiranje tokena i ostale metode vezane uz token
 @Service
 public class TokenServiceImpl implements TokenService {
 
@@ -25,29 +24,26 @@ public class TokenServiceImpl implements TokenService {
         this.decoder = decoder;
     }
 
-
-    // Metoda koja se koristi za generiranje tokena
     public String generateToken(Authentication authentication) {
-        Instant now = Instant.now(); // trenutno vrijeme
+        Instant now = Instant.now();
 
-        String scope = authentication.getAuthorities().stream() // dohvaćanje uloga korisnika
-                .map(GrantedAuthority::getAuthority) // dohvaćanje naziva uloge
-                .collect(Collectors.joining()); // spajanje svih uloga u jedan string
+        String scope = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining());
 
-        JwtClaimsSet claims = JwtClaimsSet.builder() // kreiranje claims-a
-                .issuer("self") // postavljanje issuer-a (self)
-                .issuedAt(now) // postavljanje trenutnog vremena
-                .expiresAt(now.plus(12, ChronoUnit.HOURS)) // postavljanje vremena isteka tokena
-                .subject(authentication.getName()) // postavljanje username-a
-                .claim("scope", scope) // postavljanje uloga
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plus(12, ChronoUnit.HOURS))
+                .subject(authentication.getName())
+                .claim("scope", scope)
                 .build();
 
-        return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(); // generiranje tokena
+        return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-    // Metoda koja se koristi za dohvaćanje username-a iz tokena
     public String getUsernameFromToken(String bearer) {
-        String token = bearer.substring(7); // dohvaćanje tokena iz headera
-        return String.valueOf(this.decoder.decode(token).getSubject()); // dohvaćanje username-a iz tokena
+        String token = bearer.substring(7);
+        return String.valueOf(this.decoder.decode(token).getSubject());
     }
 }

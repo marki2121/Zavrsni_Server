@@ -11,8 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-// Ova klasa predstavlja entitet korisnika u bazi podataka
-// Ova klasa implementira interfejs UserDetails koji je dio Spring Security-a
 @Entity
 @Table(name = "users")
 @AllArgsConstructor
@@ -66,7 +64,6 @@ public class User implements UserDetails {
     }
 
 
-    // Implementacija metoda iz interfejsa UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role.name()));

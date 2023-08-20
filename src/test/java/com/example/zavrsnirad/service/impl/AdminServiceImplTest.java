@@ -49,56 +49,45 @@ class AdminServiceImplTest {
     @Test
     @DisplayName("Test getAllUsers - success")
     void getAllUsers() {
-        //when
         when(userGetService.findAllUsers()).thenReturn(UserUtil.generateList());
         when(userResponseDtoMapper.map(any())).thenReturn(UserResponseDtoUtil.generateList());
-
-        //then
         assertDoesNotThrow(() -> adminService.getAllUsers("token"));
     }
 
     @Test
     @DisplayName("Test getUserById - success")
     void getUserById() throws CostumeErrorException {
-        //then
         assertDoesNotThrow(() -> adminService.getUserById("token", 1L));
     }
 
     @Test
     @DisplayName("Test deleteUserById - success")
     void deleteUserById() {
-        //when
         doNothing().when(testApplicationService).deleteAllUserApplications(any());
-
-        //then
         assertDoesNotThrow(() -> adminService.deleteUserById("token", 1L));
     }
 
     @Test
     @DisplayName("Test disableUserById - success")
     void disableUserById() {
-        //then
         assertDoesNotThrow(() -> adminService.disableUserById("token", 1L));
     }
 
     @Test
     @DisplayName("Test enableUserById - success")
     void enableUserById() {
-        //then
         assertDoesNotThrow(() -> adminService.enableUserById("token", 1L));
     }
 
     @Test
     @DisplayName("Test promoteUserById - success")
     void promoteUserById() {
-        //then
         assertDoesNotThrow(() -> adminService.promoteUserById("token", 1L));
     }
 
     @Test
     @DisplayName("Test demoteUserById - success")
     void demoteUserById() {
-        //then
         assertDoesNotThrow(() -> adminService.demoteUserById("token", 1L));
     }
 }

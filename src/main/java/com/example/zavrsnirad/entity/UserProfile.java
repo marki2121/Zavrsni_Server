@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-// Ova klasa predstavlja entitet korisnickog profila u bazi podataka
 @Entity
 @Table(name = "user_profile")
 @AllArgsConstructor

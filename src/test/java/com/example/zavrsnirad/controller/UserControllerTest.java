@@ -37,27 +37,21 @@ class UserControllerTest {
     @Test
     @DisplayName("Test get self success")
     public void testGetSelf() throws Exception {
-        //when
         when(userProfileService.getSelf(null)).thenReturn(UserDtoUtils.generate());
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user/profile")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
-                .header("Authorization", ""))
+                        .header("Authorization", ""))
                 .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Test get self fail no Authorization header")
     public void testGetSelfAndFailNoToken() throws Exception {
-        //when
         when(userProfileService.getSelf("token")).thenReturn(UserDtoUtils.generate());
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user/profile")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
-                            .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin"))))
+                                .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin"))))
                 .andExpect(status().isBadRequest())
                 .andExpect(status().reason("Required header 'Authorization' is not present."));
 
@@ -66,34 +60,24 @@ class UserControllerTest {
     @Test
     @DisplayName("Test updateProfile success")
     public void testUpdateProfile() throws Exception {
-        //given
         UpdateProfileDTO data = new UpdateProfileDTO("test", "test", "test", "test", "test", "test", "test", "test", "test");
         ObjectMapper objectMapper = new ObjectMapper();
-
-        //when
         when(userProfileService.updateSelfProfile(null, data)).thenReturn("Updated");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/user/profile/update")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
-                .header("Authorization", "")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(data)))
+                        .header("Authorization", "")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(data)))
                 .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Test updateProfile fail no token")
     public void testUpdateProfileNoToken() throws Exception {
-        //given
         UpdateProfileDTO data = new UpdateProfileDTO("test", "test", "test", "test", "test", "test", "test", "test", "test");
         ObjectMapper objectMapper = new ObjectMapper();
-
-        //when
         when(userProfileService.updateSelfProfile("token", data)).thenReturn("Updated");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/user/profile/update")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))
@@ -106,13 +90,8 @@ class UserControllerTest {
     @Test
     @DisplayName("Test updateProfile fail no data")
     public void testUpdateProfileNoData() throws Exception {
-        //given
         UpdateProfileDTO data = new UpdateProfileDTO("test", "test", "test", "test", "test", "test", "test", "test", "test");
-
-        //when
         when(userProfileService.updateSelfProfile(null, data)).thenReturn("Updated");
-
-        //then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/user/profile/update")
                         .with(jwt().authorities(List.of(new SimpleGrantedAuthority("SCOPE_ADMIN")))
                                 .jwt(jwt -> jwt.claim(StandardClaimNames.PREFERRED_USERNAME, "admin")))

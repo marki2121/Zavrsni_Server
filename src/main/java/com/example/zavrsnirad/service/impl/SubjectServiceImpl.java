@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-//TODO: Add admin role check
 @Service
 public class SubjectServiceImpl implements SubjectService {
 

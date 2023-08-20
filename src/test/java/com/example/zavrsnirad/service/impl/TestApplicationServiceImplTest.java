@@ -37,99 +37,72 @@ class TestApplicationServiceImplTest {
     @Test
     @DisplayName("Test applyForTest - success")
     void applyForTest() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken(any())).thenReturn(UserUtil.generate());
         when(testService.getTestForUser(any(), any())).thenReturn(TestUtil.generate());
         when(testApplicationRepository.findByStudentAndTest(any(), any())).thenReturn(Optional.empty());
         when(testApplicationRepository.save(any())).thenReturn(TestApplicationUtil.generate());
-
-        //then
         assertEquals("Applied for test", testApplicationService.applyForTest("token", 1L));
     }
 
     @Test
     @DisplayName("Test applyForTest - user already applied")
     void applyForTestUserAlreadyApplied() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken(any())).thenReturn(UserUtil.generate());
         when(testService.getTestForUser(any(), any())).thenReturn(TestUtil.generate());
         when(testApplicationRepository.findByStudentAndTest(any(), any())).thenReturn(Optional.of(TestApplicationUtil.generate()));
-
-        //then
         assertThrows(CostumeErrorException.class, () -> testApplicationService.applyForTest("token", 1L));
     }
 
     @Test
     @DisplayName("Test getAllApplications - success")
     void getAllApplications() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken(any())).thenReturn(UserUtil.generate());
         when(testApplicationRepository.findAllByStudent(any())).thenReturn(TestApplicationUtil.generateList());
-
-        //then
         assertDoesNotThrow(() -> testApplicationService.getAllApplications("token"));
     }
 
     @Test
     @DisplayName("Test deleteApplication - success")
     void deleteApplication() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken(any())).thenReturn(UserUtil.generate());
         when(testApplicationRepository.findById(any())).thenReturn(Optional.of(TestApplicationUtil.generate()));
         doNothing().when(testApplicationRepository).delete(any());
-
-        //then
         assertDoesNotThrow(() -> testApplicationService.deleteApplication("token", 1L));
     }
 
     @Test
     @DisplayName("Test getTestApplicationById - success")
     void getTestApplicationById() throws CostumeErrorException {
-        //when
         when(userGetService.getUserFromToken(any())).thenReturn(UserUtil.generate());
         when(testApplicationRepository.findById(any())).thenReturn(Optional.of(TestApplicationUtil.generate()));
-
-        //then
         assertDoesNotThrow(() -> testApplicationService.getTestApplicationById("token", 1L));
     }
 
     @Test
     @DisplayName("Test saveTestApplication - success")
     void saveTestApplication() {
-        //when
         when(testApplicationRepository.save(any())).thenReturn(TestApplicationUtil.generate());
-
-        //then
         assertDoesNotThrow(() -> testApplicationService.saveTestApplication(TestApplicationUtil.generate()));
     }
 
     @Test
     @DisplayName("Test getAllTestApplicationsForUserAndSubject - success")
     void getAllTestApplicationsForUserAndSubject() {
-        //when
         when(testApplicationRepository.findAllByStudentAndTest_Subject(any(), any())).thenReturn(TestApplicationUtil.generateList());
-
-        //then
         assertDoesNotThrow(() -> testApplicationService.getAllTestApplicationsForUserAndSubject(UserUtil.generate(), SubjectUtil.generate()));
     }
 
     @Test
     @DisplayName("Test getAllTestApplicationsForUserAndSubject - success")
     void deleteApplicationEntity() {
-        //when
         doNothing().when(testApplicationRepository).delete(any());
-
-        //then
         assertDoesNotThrow(() -> testApplicationService.deleteApplicationEntity(TestApplicationUtil.generate()));
     }
 
     @Test
     @DisplayName("Test deleteAllUserApplications - success")
     void deleteAllUserApplications() {
-        //when
         doNothing().when(testApplicationRepository).deleteByStudent(any());
-
-        //then
         assertDoesNotThrow(() -> testApplicationService.deleteAllUserApplications(UserUtil.generate()));
     }
 }

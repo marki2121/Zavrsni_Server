@@ -23,7 +23,6 @@ class UserResponseDtoMapperTest {
     @Test
     @DisplayName("Test apply")
     void testApply() {
-        //when
         User user = new User();
         UserProfile userProfile = mock(UserProfile.class);
         when(userProfile.getAboutMe()).thenReturn("About Me");
@@ -42,8 +41,6 @@ class UserResponseDtoMapperTest {
         user.setUserProfile(userProfile);
         user.setEnabled(true);
         UserResponseDTO actualApplyResult = userResponseDtoMapper.apply(user);
-
-        //then
         assertEquals("About Me", actualApplyResult.aboutMe());
         assertEquals("12345", actualApplyResult.zipCode());
         assertEquals("jane.doe", actualApplyResult.username());
@@ -56,8 +53,6 @@ class UserResponseDtoMapperTest {
         assertEquals("42 Main St", actualApplyResult.address());
         assertEquals(1L, actualApplyResult.id());
         assertEquals("jane.doe@example.org", actualApplyResult.email());
-
-        //verify
         verify(userProfile).getAboutMe();
         verify(userProfile).getAddress();
         verify(userProfile).getCity();

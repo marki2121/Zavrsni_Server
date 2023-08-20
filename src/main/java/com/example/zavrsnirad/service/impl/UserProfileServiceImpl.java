@@ -11,10 +11,8 @@ import com.example.zavrsnirad.service.UserGetService;
 import com.example.zavrsnirad.service.UserProfileService;
 import org.springframework.stereotype.Service;
 
-// Ova klasa predstavlja servis korisnickog profila koji se koristi za pozivanje metoda iz repozitorija te za logiku aplikacije
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
-    // Injektiranje repozitorija
     private final UserProfileRepository userProfileRepository;
     private final UserGetService userService;
     private final UserDtoMapper userDtoMapper;
@@ -33,48 +31,48 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public String updateSelfProfile(String authorization, UpdateProfileDTO data) throws CostumeErrorException {
         User user = userService.getUserFromToken(authorization);
-        UserProfile userProfile = user.getUserProfile(); // dohvaćanje korisnickog profila
+        UserProfile userProfile = user.getUserProfile();
 
         boolean updated = false;
 
-        if(data.firstName() != null && !data.firstName().isEmpty() && !data.firstName().isBlank() && !data.firstName().equals(userProfile.getFirstName())) {
+        if (data.firstName() != null && !data.firstName().isEmpty() && !data.firstName().isBlank() && !data.firstName().equals(userProfile.getFirstName())) {
             userProfile.setFirstName(data.firstName());
             updated = true;
         }
-        if(data.lastName() != null && !data.lastName().isEmpty() && !data.lastName().isBlank() && !data.lastName().equals(userProfile.getLastName())) {
+        if (data.lastName() != null && !data.lastName().isEmpty() && !data.lastName().isBlank() && !data.lastName().equals(userProfile.getLastName())) {
             userProfile.setLastName(data.lastName());
             updated = true;
         }
-        if(data.email() != null && !data.email().isEmpty() && !data.email().isBlank() && !data.email().equals(userProfile.getEmail())) {
+        if (data.email() != null && !data.email().isEmpty() && !data.email().isBlank() && !data.email().equals(userProfile.getEmail())) {
             userProfile.setEmail(data.email());
             updated = true;
         }
-        if(data.phoneNumber() != null && !data.phoneNumber().isEmpty() && !data.phoneNumber().isBlank() && !data.phoneNumber().equals(userProfile.getPhoneNumber())) {
+        if (data.phoneNumber() != null && !data.phoneNumber().isEmpty() && !data.phoneNumber().isBlank() && !data.phoneNumber().equals(userProfile.getPhoneNumber())) {
             userProfile.setPhoneNumber(data.phoneNumber());
             updated = true;
         }
-        if(data.address() != null && !data.address().isEmpty() && !data.address().isBlank() && !data.address().equals(userProfile.getAddress())) {
+        if (data.address() != null && !data.address().isEmpty() && !data.address().isBlank() && !data.address().equals(userProfile.getAddress())) {
             userProfile.setAddress(data.address());
             updated = true;
         }
-        if(data.city() != null && !data.city().isEmpty() && !data.city().isBlank() && !data.city().equals(userProfile.getCity())) {
+        if (data.city() != null && !data.city().isEmpty() && !data.city().isBlank() && !data.city().equals(userProfile.getCity())) {
             userProfile.setCity(data.city());
             updated = true;
         }
-        if(data.zipCode() != null && !data.zipCode().isEmpty() && !data.zipCode().isBlank() && !data.zipCode().equals(userProfile.getZipCode())) {
+        if (data.zipCode() != null && !data.zipCode().isEmpty() && !data.zipCode().isBlank() && !data.zipCode().equals(userProfile.getZipCode())) {
             userProfile.setZipCode(data.zipCode());
             updated = true;
         }
-        if(data.country() != null && !data.country().isEmpty() && !data.country().isBlank() && !data.country().equals(userProfile.getCountry())) {
+        if (data.country() != null && !data.country().isEmpty() && !data.country().isBlank() && !data.country().equals(userProfile.getCountry())) {
             userProfile.setCountry(data.country());
             updated = true;
         }
-        if(data.aboutMe() != null && !data.aboutMe().isEmpty() && !data.aboutMe().isBlank() && !data.aboutMe().equals(userProfile.getAboutMe())) {
+        if (data.aboutMe() != null && !data.aboutMe().isEmpty() && !data.aboutMe().isBlank() && !data.aboutMe().equals(userProfile.getAboutMe())) {
             userProfile.setAboutMe(data.aboutMe());
             updated = true;
         }
 
-        if(!updated) {
+        if (!updated) {
             return "No changes";
         }
 
